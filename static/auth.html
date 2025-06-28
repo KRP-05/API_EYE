@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Authentication</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <button class="back-btn" onclick="navigateTo('index.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 class="auth-title" data-en="Welcome to AI-nemia" data-hi="AI-नेमिया में आपका स्वागत है">Welcome to AI-nemia</h2>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('login')" data-en="Login" data-hi="लॉगिन">Login</button>
+                <button class="tab-btn" onclick="showTab('signup')" data-en="Sign Up" data-hi="साइन अप">Sign Up</button>
+            </div>
+            
+            <div id="login-tab" class="tab-content active">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" data-placeholder-en="Email or Phone" data-placeholder-hi="ईमेल या फोन" placeholder="Email or Phone" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" data-placeholder-en="Password" data-placeholder-hi="पासवर्ड" placeholder="Password" required>
+                    </div>
+                    
+                    <button type="submit" class="primary-btn full-width">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span data-en="Login" data-hi="लॉगिन">Login</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div id="signup-tab" class="tab-content">
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signupName" data-placeholder-en="Full Name" data-placeholder-hi="पूरा नाम" placeholder="Full Name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signupEmail" data-placeholder-en="Email" data-placeholder-hi="ईमेल" placeholder="Email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="signupPhone" data-placeholder-en="Phone Number" data-placeholder-hi="फोन नंबर" placeholder="Phone Number" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" data-placeholder-en="Password" data-placeholder-hi="पासवर्ड" placeholder="Password" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="dueDate" data-placeholder-en="Expected Due Date" data-placeholder-hi="अपेक्षित प्रसव तिथि" placeholder="Expected Due Date">
+                    </div>
+                    
+                    <button type="submit" class="primary-btn full-width">
+                        <i class="fas fa-user-plus"></i>
+                        <span data-en="Create Account" data-hi="खाता बनाएं">Create Account</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="guest-option">
+            <button class="ghost-btn" onclick="navigateTo('dashboard.html?guest=true')">
+                <i class="fas fa-user-check"></i>
+                <span data-en="Continue as Guest" data-hi="अतिथि के रूप में जारी रखें">Continue as Guest</span>
+            </button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

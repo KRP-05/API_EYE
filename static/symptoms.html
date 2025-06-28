@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Symptom Checker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="Symptom Checker" data-hi="लक्षण जांचकर्ता">Symptom Checker</h1>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="symptoms-content">
+            <div class="warning-notice">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p data-en="This tool provides general guidance only. It does not replace professional medical advice. Always consult healthcare professionals for proper diagnosis and treatment." data-hi="यह उपकरण केवल सामान्य मार्गदर्शन प्रदान करता है। यह पेशेवर चिकित्सा सलाह का विकल्प नहीं है। उचित निदान और उपचार के लिए हमेशा स्वास्थ्य पेशेवरों से सलाह लें।">This tool provides general guidance only. It does not replace professional medical advice. Always consult healthcare professionals for proper diagnosis and treatment.</p>
+            </div>
+            
+            <div class="symptoms-form">
+                <h3 data-en="Please answer the following questions honestly:" data-hi="कृपया निम्नलिखित प्रश्नों का ईमानदारी से उत्तर दें:">Please answer the following questions honestly:</h3>
+                
+                <div class="symptom-questions" id="symptomQuestions">
+                    <!-- Questions will be populated by JavaScript -->
+                </div>
+                
+                <button class="primary-btn" onclick="checkSymptoms()" id="checkBtn">
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-en="Check Symptoms" data-hi="लक्षणों की जांच करें">Check Symptoms</span>
+                </button>
+            </div>
+            
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="risk-assessment" id="riskAssessment">
+                    <!-- Risk assessment will be populated by JavaScript -->
+                </div>
+                
+                <div class="recommendations" id="recommendations">
+                    <!-- Recommendations will be populated by JavaScript -->
+                </div>
+                
+                <div class="emergency-contact" id="emergencyContact" style="display: none;">
+                    <div class="emergency-card">
+                        <div class="emergency-header">
+                            <i class="fas fa-phone-alt"></i>
+                            <h3 data-en="Emergency Contacts" data-hi="आपातकालीन संपर्क">Emergency Contacts</h3>
+                        </div>
+                        <div class="emergency-buttons">
+                            <button class="emergency-btn" onclick="callEmergency('108')">
+                                <i class="fas fa-ambulance"></i>
+                                <span data-en="Call 108 (Ambulance)" data-hi="108 पर कॉल करें (एम्बुलेंस)">Call 108 (Ambulance)</span>
+                            </button>
+                            <button class="emergency-btn" onclick="callEmergency('102')">
+                                <i class="fas fa-hospital"></i>
+                                <span data-en="Call 102 (Health Helpline)" data-hi="102 पर कॉल करें (स्वास्थ्य हेल्पलाइन)">Call 102 (Health Helpline)</span>
+                            </button>
+                            <button class="emergency-btn" onclick="contactASHA()">
+                                <i class="fas fa-user-md"></i>
+                                <span data-en="Contact ASHA Worker" data-hi="आशा कार्यकर्ता से संपर्क करें">Contact ASHA Worker</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="primary-btn" onclick="saveSymptomReport()">
+                        <i class="fas fa-save"></i>
+                        <span data-en="Save Report" data-hi="रिपोर्ट सेव करें">Save Report</span>
+                    </button>
+                    <button class="secondary-btn" onclick="shareReport()">
+                        <i class="fas fa-share"></i>
+                        <span data-en="Share with Doctor" data-hi="डॉक्टर के साथ साझा करें">Share with Doctor</span>
+                    </button>
+                    <button class="ghost-btn" onclick="resetSymptoms()">
+                        <i class="fas fa-redo"></i>
+                        <span data-en="Check Again" data-hi="फिर से जांचें">Check Again</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        const symptomQuestions = [
+            {
+                id: 'dizziness',
+                question: { en: 'Are you experiencing dizziness or feeling faint?', hi: 'क्या आप चक्कर आना या बेहोशी महसूस कर रहे हैं?' },
+                severity: 2,
+                category: 'anemia'
+            },
+            {
+                id: 'fatigue',
+                question: { en: 'Do you feel unusually tired or weak?', hi: 'क्या आप असामान्य रूप से थकान या कमजोरी महसूस कर रहे हैं?' },
+                severity: 1,
+                category: 'anemia'
+            },
+            {
+                id: 'breathlessness',
+                question: { en: 'Are you experiencing shortness of breath?', hi: 'क्या आप सांस की तकलीफ का अनुभव कर रहे हैं?' },
+                severity: 2,
+                category: 'anemia'
+            },
+            {
+                id: 'pale_skin',
+                question: { en: 'Has someone mentioned that you look pale?', hi: 'क्या किसी ने कहा है कि आप पीले दिख रहे हैं?' },
+                severity: 1,
+                category: 'anemia'
+            },
+            {
+                id: 'heart_palpitations',
+                question: { en: 'Are you experiencing rapid or irregular heartbeat?', hi: 'क्या आप तेज या अनियमित दिल की धड़कन का अनुभव कर रहे हैं?' },
+                severity: 2,
+                category: 'cardiac'
+            },
+            {
+                id: 'swelling',
+                question: { en: 'Do you have swelling in your feet, ankles, or hands?', hi: 'क्या आपके पैर, टखने या हाथों में सूजन है?' },
+                severity: 3,
+                category: 'pregnancy'
+            },
+            {
+                id: 'headache',
+                question: { en: 'Are you experiencing severe or persistent headaches?', hi: 'क्या आप गंभीर या लगातार सिरदर्द का अनुभव कर रहे हैं?' },
+                severity: 2,
+                category: 'pregnancy'
+            },
+            {
+                id: 'blurred_vision',
+                question: { en: 'Are you experiencing blurred vision or seeing spots?', hi: 'क्या आप धुंधली दृष्टि या धब्बे देखने का अनुभव कर रहे हैं?' },
+                severity: 3,
+                category: 'pregnancy'
+            },
+            {
+                id: 'abdominal_pain',
+                question: { en: 'Are you experiencing severe abdominal pain?', hi: 'क्या आप गंभीर पेट दर्द का अनुभव कर रहे हैं?' },
+                severity: 3,
+                category: 'pregnancy'
+            },
+            {
+                id: 'bleeding',
+                question: { en: 'Are you experiencing any unusual bleeding?', hi: 'क्या आप कोई असामान्य रक्तस्राव का अनुभव कर रहे हैं?' },
+                severity: 3,
+                category: 'pregnancy'
+            },
+            {
+                id: 'fetal_movement',
+                question: { en: 'Have you noticed decreased or no fetal movement? (if applicable)', hi: 'क्या आपने भ्रूण की गति में कमी या कोई गति नहीं देखी है? (यदि लागू हो)' },
+                severity: 3,
+                category: 'pregnancy'
+            },
+            {
+                id: 'nausea_vomiting',
+                question: { en: 'Are you experiencing severe nausea and vomiting?', hi: 'क्या आप गंभीर मतली और उल्टी का अनुभव कर रहे हैं?' },
+                severity: 2,
+                category: 'pregnancy'
+            }
+        ];
+        
+        let symptomAnswers = {};
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSymptomQuestions();
+        });
+        
+        function renderSymptomQuestions() {
+            const questionsContainer = document.getElementById('symptomQuestions');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const yesText = currentLang === 'hi' ? 'हाँ' : 'Yes';
+            const noText = currentLang === 'hi' ? 'नहीं' : 'No';
+            const unsureText = currentLang === 'hi' ? 'पता नहीं' : 'Not Sure';
+            
+            questionsContainer.innerHTML = symptomQuestions.map(symptom => `
+                <div class="symptom-question">
+                    <h4>${symptom.question[currentLang]}</h4>
+                    <div class="question-options">
+                        <label class="radio-option">
+                            <input type="radio" name="${symptom.id}" value="yes" onchange="updateAnswer('${symptom.id}', 'yes')">
+                            <span class="radio-custom"></span>
+                            ${yesText}
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="${symptom.id}" value="no" onchange="updateAnswer('${symptom.id}', 'no')">
+                            <span class="radio-custom"></span>
+                            ${noText}
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="${symptom.id}" value="unsure" onchange="updateAnswer('${symptom.id}', 'unsure')">
+                            <span class="radio-custom"></span>
+                            ${unsureText}
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateAnswer(symptomId, answer) {
+            symptomAnswers[symptomId] = answer;
+        }
+        
+        function checkSymptoms() {
+            // Ensure all questions are answered
+            const unanswered = symptomQuestions.filter(q => !symptomAnswers[q.id]);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (unanswered.length > 0) {
+                const pleaseAnswerText = currentLang === 'hi' ? 
+                    'लक्षणों की जांच करने से पहले कृपया सभी प्रश्नों का उत्तर दें' :
+                    'Please answer all questions before checking symptoms';
+                showNotification(pleaseAnswerText);
+                return;
+            }
+            
+            // Calculate risk score
+            const riskAssessment = calculateRisk();
+            displayResults(riskAssessment);
+        }
+        
+        function calculateRisk() {
+            let totalScore = 0;
+            let positiveSymptoms = [];
+            let categories = { anemia: 0, cardiac: 0, pregnancy: 0 };
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            symptomQuestions.forEach(symptom => {
+                const answer = symptomAnswers[symptom.id];
+                if (answer === 'yes') {
+                    totalScore += symptom.severity;
+                    positiveSymptoms.push(symptom);
+                    categories[symptom.category] += symptom.severity;
+                } else if (answer === 'unsure') {
+                    totalScore += Math.floor(symptom.severity / 2);
+                }
+            });
+            
+            // Determine risk level
+            let riskLevel, riskColor, recommendations;
+            
+            if (totalScore >= 8 || positiveSymptoms.some(s => s.severity === 3)) {
+                riskLevel = currentLang === 'hi' ? 'उच्च जोखिम' : 'High Risk';
+                riskColor = '#E74C3C';
+                recommendations = currentLang === 'hi' ? [
+                    'तुरंत चिकित्सा सहायता लें',
+                    'निकटतम अस्पताल या आपातकालीन कक्ष जाएं',
+                    'तुरंत अपने स्वास्थ्य प्रदाता से संपर्क करें',
+                    'उपचार में देरी न करें'
+                ] : [
+                    'Seek immediate medical attention',
+                    'Visit the nearest hospital or emergency room',
+                    'Contact your healthcare provider immediately',
+                    'Do not delay treatment'
+                ];
+            } else if (totalScore >= 4) {
+                riskLevel = currentLang === 'hi' ? 'मध्यम जोखिम' : 'Moderate Risk';
+                riskColor = '#F39C12';
+                recommendations = currentLang === 'hi' ? [
+                    '24-48 घंटों के भीतर अपने स्वास्थ्य प्रदाता के साथ अपॉइंटमेंट शेड्यूल करें',
+                    'लक्षणों की बारीकी से निगरानी करें',
+                    'मार्गदर्शन के लिए आशा कार्यकर्ता से संपर्क करें',
+                    'कठिन गतिविधियों से बचें'
+                ] : [
+                    'Schedule an appointment with your healthcare provider within 24-48 hours',
+                    'Monitor symptoms closely',
+                    'Contact ASHA worker for guidance',
+                    'Avoid strenuous activities'
+                ];
+            } else {
+                riskLevel = currentLang === 'hi' ? 'कम जोखिम' : 'Low Risk';
+                riskColor = '#16A085';
+                recommendations = currentLang === 'hi' ? [
+                    'नियमित प्रसवपूर्व देखभाल जारी रखें',
+                    'स्वस्थ आहार और जीवनशैली बनाए रखें',
+                    'लक्षणों की निगरानी करें और किसी भी बदलाव की रिपोर्ट करें',
+                    'निर्धारित अपॉइंटमेंट रखें'
+                ] : [
+                    'Continue regular prenatal care',
+                    'Maintain healthy diet and lifestyle',
+                    'Monitor symptoms and report any changes',
+                    'Keep scheduled appointments'
+                ];
+            }
+            
+            return {
+                riskLevel,
+                riskColor,
+                totalScore,
+                positiveSymptoms,
+                categories,
+                recommendations
+            };
+        }
+        
+        function displayResults(assessment) {
+            const resultsSection = document.getElementById('resultsSection');
+            const riskAssessment = document.getElementById('riskAssessment');
+            const recommendationsDiv = document.getElementById('recommendations');
+            const emergencyContact = document.getElementById('emergencyContact');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const resultsText = currentLang === 'hi' ? 'लक्षण मूल्यांकन परिणाम' : 'Symptom Assessment Results';
+            const scoreText = currentLang === 'hi' ? 'स्कोर' : 'Score';
+            const reportedSymptomsText = currentLang === 'hi' ? 'रिपोर्ट किए गए लक्षण:' : 'Reported Symptoms:';
+            const recommendationsText = currentLang === 'hi' ? 'सिफारिशें' : 'Recommendations';
+            
+            // Risk assessment display
+            riskAssessment.innerHTML = `
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>${resultsText}</h3>
+                    </div>
+                    <div class="risk-level-display">
+                        <div class="risk-indicator" style="color: ${assessment.riskColor}">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ${assessment.riskLevel}
+                        </div>
+                        <div class="risk-score">${scoreText}: ${assessment.totalScore}/30</div>
+                    </div>
+                    <div class="positive-symptoms">
+                        <h4>${reportedSymptomsText}</h4>
+                        <ul>
+                            ${assessment.positiveSymptoms.map(s => `<li>${s.question[currentLang].replace('?', '')}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Recommendations display
+            recommendationsDiv.innerHTML = `
+                <div class="recommendations-card">
+                    <div class="recommendations-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>${recommendationsText}</h3>
+                    </div>
+                    <ul class="recommendations-list">
+                        ${assessment.recommendations.map(rec => `<li><i class="fas fa-check"></i>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // Show emergency contact if high risk
+            if (assessment.riskLevel.includes('उच्च') || assessment.riskLevel.includes('High')) {
+                emergencyContact.style.display = 'block';
+            } else {
+                emergencyContact.style.display = 'none';
+            }
+            
+            resultsSection.style.display = 'block';
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function callEmergency(number) {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const callText = currentLang === 'hi' ? `${number} पर कॉल करें?` : `Call ${number}?`;
+            
+            if (confirm(callText)) {
+                window.location.href = `tel:${number}`;
+            }
+        }
+        
+        function contactASHA() {
+            // Get saved ASHA contact from profile or use default
+            const ashaContact = localStorage.getItem('asha_contact') || '9876543210';
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const callText = currentLang === 'hi' ? 
+                `${ashaContact} पर आशा कार्यकर्ता को कॉल करें?` :
+                `Call ASHA Worker at ${ashaContact}?`;
+            
+            if (confirm(callText)) {
+                window.location.href = `tel:${ashaContact}`;
+            }
+        }
+        
+        function saveSymptomReport() {
+            const assessment = calculateRisk();
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const report = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: 'Symptom Check',
+                symptoms: symptomAnswers,
+                assessment: {
+                    riskLevel: assessment.riskLevel,
+                    totalScore: assessment.totalScore,
+                    positiveSymptoms: assessment.positiveSymptoms.length,
+                    recommendations: assessment.recommendations
+                }
+            };
+            
+            saveReportToStorage(report);
+            const savedText = currentLang === 'hi' ? 
+                'लक्षण रिपोर्ट सफलतापूर्वक सेव हो गई!' :
+                'Symptom report saved successfully!';
+            showNotification(savedText);
+        }
+        
+        function shareReport() {
+            const assessment = calculateRisk();
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const shareText = currentLang === 'hi' ? 
+                `AI-नेमिया लक्षण जांच रिपोर्ट
+दिनांक: ${new Date().toLocaleDateString()}
+जोखिम स्तर: ${assessment.riskLevel}
+स्कोर: ${assessment.totalScore}/30
+सकारात्मक लक्षण: ${assessment.positiveSymptoms.length}
+
+कृपया हमारी परामर्श के दौरान इन लक्षणों की समीक्षा करें।
+
+AI-नेमिया ऐप द्वारा जेनरेट किया गया` :
+                `AI-nemia Symptom Check Report
+Date: ${new Date().toLocaleDateString()}
+Risk Level: ${assessment.riskLevel}
+Score: ${assessment.totalScore}/30
+Positive Symptoms: ${assessment.positiveSymptoms.length}
+
+Please review these symptoms with me during our consultation.
+
+Generated by AI-nemia App`;
+            
+            if (navigator.share) {
+                const titleText = currentLang === 'hi' ? 'लक्षण जांच रिपोर्ट' : 'Symptom Check Report';
+                navigator.share({
+                    title: titleText,
+                    text: shareText
+                });
+            } else {
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+        
+        function resetSymptoms() {
+            symptomAnswers = {};
+            document.getElementById('resultsSection').style.display = 'none';
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            document.querySelector('.symptoms-form').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

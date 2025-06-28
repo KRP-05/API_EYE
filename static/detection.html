@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Anemia Detection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="AI-nemia Detection" data-hi="AI-नेमिया का पता लगाना">AI-nemia Detection</h1>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="detection-content">
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchBodyPart('nail')">
+                        <i class="fas fa-hand-paper"></i>
+                        <span data-en="Nail" data-hi="नाखून">Nail</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchBodyPart('eye')">
+                        <i class="fas fa-eye"></i>
+                        <span data-en="Eye" data-hi="आंख">Eye</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchBodyPart('tongue')">
+                        <i class="fas fa-mouth-open"></i>
+                        <span data-en="Tongue" data-hi="जीभ">Tongue</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="instructions-card">
+                <h3 id="instructionTitle" data-en="Nail Examination" data-hi="नाखून की जांच">Nail Examination</h3>
+                <p id="instructionText" data-en="Place your fingernail against a white background in good lighting. The nail bed should be clearly visible." data-hi="अच्छी रोशनी में अपने नाखून को सफेद पृष्ठभूमि के सामने रखें। नाखून का तल स्पष्ट रूप से दिखाई देना चाहिए।">Place your fingernail against a white background in good lighting. The nail bed should be clearly visible.</p>
+                <div class="instruction-tips">
+                    <div class="tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <span data-en="Use natural light when possible" data-hi="जब संभव हो तो प्राकृतिक प्रकाश का उपयोग करें">Use natural light when possible</span>
+                    </div>
+                    <div class="tip">
+                        <i class="fas fa-hand-paper"></i>
+                        <span data-en="Keep hand steady for clear image" data-hi="स्पष्ट छवि के लिए हाथ को स्थिर रखें">Keep hand steady for clear image</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="camera-section">
+                <div class="image-preview" id="imagePreview">
+                    <i class="fas fa-image preview-icon"></i>
+                    <p data-en="No image selected" data-hi="कोई छवि चयनित नहीं">No image selected</p>
+                </div>
+                
+                <div class="camera-buttons">
+                    <button class="primary-btn" onclick="takePhoto()">
+                        <i class="fas fa-camera"></i>
+                        <span data-en="Take Photo" data-hi="फोटो लें">Take Photo</span>
+                    </button>
+                    <button class="secondary-btn" onclick="uploadPhoto()">
+                        <i class="fas fa-upload"></i>
+                        <span data-en="Upload Photo" data-hi="फोटो अपलोड करें">Upload Photo</span>
+                    </button>
+                </div>
+                
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImageSelect(event)">
+                <input type="file" id="uploadInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+            </div>
+            
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzeImage()" disabled>
+                <i class="fas fa-microscope"></i>
+                <span data-en="Analyze Image" data-hi="छवि का विश्लेषण करें">Analyze Image</span>
+            </button>
+            
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="result-card">
+                    <div class="risk-indicator">
+                        <div class="risk-level" id="riskLevel">Moderate Risk</div>
+                        <div class="confidence" id="confidence">85% Confidence</div>
+                    </div>
+                    
+                    <div class="result-details">
+                        <h4 data-en="Analysis Results" data-hi="विश्लेषण परिणाम">Analysis Results</h4>
+                        <p id="resultAdvice" data-en="Based on the analysis, we recommend visiting your nearest Primary Health Center for further evaluation." data-hi="विश्लेषण के आधार पर, हम आगे के मूल्यांकन के लिए आपके निकटतम प्राथमिक स्वास्थ्य केंद्र जाने की सलाह देते हैं।">Based on the analysis, we recommend visiting your nearest Primary Health Center for further evaluation.</p>
+                        
+                        <div class="action-buttons">
+                            <button class="primary-btn" onclick="saveReport()">
+                                <i class="fas fa-save"></i>
+                                <span data-en="Save Report" data-hi="रिपोर्ट सेव करें">Save Report</span>
+                            </button>
+                            <button class="secondary-btn" onclick="shareResult()">
+                                <i class="fas fa-share"></i>
+                                <span data-en="Share Result" data-hi="परिणाम साझा करें">Share Result</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let currentBodyPart = 'nail';
+        let currentImage = null;
+        
+        const instructions = {
+            nail: {
+                title: { en: 'Nail Examination', hi: 'नाखून की जांच' },
+                text: { en: 'Place your fingernail against a white background in good lighting. The nail bed should be clearly visible.', hi: 'अच्छी रोशनी में अपने नाखून को सफेद पृष्ठभूमि के सामने रखें। नाखून का तल स्पष्ट रूप से दिखाई देना चाहिए।' }
+            },
+            eye: {
+                title: { en: 'Eye Examination', hi: 'आंख की जांच' },
+                text: { en: 'Pull down your lower eyelid gently and take a clear photo of the inner eyelid (conjunctiva).', hi: 'अपनी निचली पलक को धीरे से नीचे खींचें और भीतरी पलक (कंजंक्टिवा) की स्पष्ट तस्वीर लें।' }
+            },
+            tongue: {
+                title: { en: 'Tongue Examination', hi: 'जीभ की जांच' },
+                text: { en: 'Stick out your tongue fully and take a clear photo in good lighting conditions.', hi: 'अपनी जीभ को पूरी तरह से बाहर निकालें और अच्छी रोशनी में स्पष्ट तस्वीर लें।' }
+            }
+        };
+        
+        function switchBodyPart(bodyPart) {
+            currentBodyPart = bodyPart;
+            
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+            
+            // Update instructions
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            document.getElementById('instructionTitle').textContent = instructions[bodyPart].title[currentLang];
+            document.getElementById('instructionText').textContent = instructions[bodyPart].text[currentLang];
+            
+            // Reset image and results
+            resetDetection();
+        }
+        
+        function takePhoto() {
+            document.getElementById('cameraInput').click();
+        }
+        
+        function uploadPhoto() {
+            document.getElementById('uploadInput').click();
+        }
+        
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentImage = e.target.result;
+                    displayImage(e.target.result);
+                    document.getElementById('analyzeBtn').disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function displayImage(imageSrc) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = `<img src="${imageSrc}" alt="Selected image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+        }
+        
+        function analyzeImage() {
+    if (!currentImage) return;
+
+    // Show loading state
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const currentLang = localStorage.getItem('app_language') || 'en';
+    const analyzingText = currentLang === 'hi' ? 'विश्लेषण कर रहे हैं...' : 'Analyzing...';
+    analyzeBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${analyzingText}`;
+    analyzeBtn.disabled = true;
+
+    // Convert dataURL to Blob
+    const blob = dataURLtoBlob(currentImage);
+    const formData = new FormData();
+    formData.append('file', blob, 'image.jpg');
+
+    // Call the Flask API
+    fetch('/predict', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+
+        const label = data.prediction;
+        const confidence = data.confidence.toFixed(1);
+
+        const riskLevelElem = document.getElementById('riskLevel');
+        const confidenceElem = document.getElementById('confidence');
+
+        // Set UI based on prediction
+        if (label === 'Anemic') {
+            riskLevelElem.textContent = currentLang === 'hi' ? 'उच्च जोखिम' : 'High Risk';
+            riskLevelElem.style.color = '#E74C3C'; // red
+        } else {
+            riskLevelElem.textContent = currentLang === 'hi' ? 'कम जोखिम' : 'Low Risk';
+            riskLevelElem.style.color = '#16A085'; // green
+        }
+
+        const confidenceText = currentLang === 'hi'
+            ? `${confidence}% विश्वसनीयता`
+            : `${confidence}% Confidence`;
+        confidenceElem.textContent = confidenceText;
+    })
+    .catch(err => {
+        alert('Error: ' + err.message);
+    })
+    .finally(() => {
+        // Restore button text
+        const analyzeText = currentLang === 'hi' ? 'विश्लेषण करें' : 'Analyze';
+        analyzeBtn.innerHTML = `<i class="fas fa-microscope"></i> ${analyzeText}`;
+        analyzeBtn.disabled = false;
+    });
+}
+
+// Helper: convert dataURL to Blob
+function dataURLtoBlob(dataURL) {
+    const parts = dataURL.split(',');
+    const mime = parts[0].match(/:(.*?);/)[1];
+    const bstr = atob(parts[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+}
+`;
+            analyzeBtn.disabled = true;
+            
+            // Simulate analysis with random results
+            setTimeout(() => {
+                const riskLevels = currentLang === 'hi' ? ['कम जोखिम', 'मध्यम जोखिम', 'उच्च जोखिम'] : ['Low Risk', 'Moderate Risk', 'High Risk'];
+                const riskColors = ['#16A085', '#F39C12', '#E74C3C'];
+                const confidences = [78, 82, 85, 89, 92, 95];
+                
+                const randomRisk = Math.floor(Math.random() * riskLevels.length);
+                const randomConfidence = confidences[Math.floor(Math.random() * confidences.length)];
+                
+                document.getElementById('riskLevel').textContent = riskLevels[randomRisk];
+                document.getElementById('riskLevel').style.color = riskColors[randomRisk];
+                
+                const confidenceText = currentLang === 'hi' ? `${randomConfidence}% विश्वसनीयता` : `${randomConfidence}% Confidence`;
+                document.getElementById('confidence').textContent = confidenceText;
+                
+                // Set advice based on risk level
+                const adviceTexts = currentLang === 'hi' ? {
+                    0: 'आपके परिणाम सामान्य दिखते हैं। नियमित जांच जारी रखें और स्वस्थ आहार बनाए रखें।',
+                    1: 'विश्लेषण के आधार पर, हम आगे के मूल्यांकन के लिए आपके निकटतम प्राथमिक स्वास्थ्य केंद्र जाने की सलाह देते हैं।',
+                    2: 'उच्च जोखिम का पता चला है। कृपया उचित निदान और उपचार के लिए तुरंत स्वास्थ्य पेशेवर से सलाह लें।'
+                } : {
+                    0: 'Your results look normal. Continue with regular checkups and maintain a healthy diet.',
+                    1: 'Based on the analysis, we recommend visiting your nearest Primary Health Center for further evaluation.',
+                    2: 'High risk detected. Please consult with a healthcare professional immediately for proper diagnosis and treatment.'
+                };
+                
+                document.getElementById('resultAdvice').textContent = adviceTexts[randomRisk];
+                
+                // Show results
+                document.getElementById('resultsSection').style.display = 'block';
+                
+                // Reset button
+                const analyzeText = currentLang === 'hi' ? 'छवि का विश्लेषण करें' : 'Analyze Image';
+                analyzeBtn.innerHTML = `<i class="fas fa-microscope"></i> ${analyzeText}`;
+                analyzeBtn.disabled = false;
+            }, 2000);
+        }
+        
+        function saveReport() {
+            const report = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: 'AI-nemia Detection',
+                bodyPart: currentBodyPart,
+                riskLevel: document.getElementById('riskLevel').textContent,
+                confidence: document.getElementById('confidence').textContent,
+                advice: document.getElementById('resultAdvice').textContent,
+                image: currentImage
+            };
+            
+            saveReportToStorage(report);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const successText = currentLang === 'hi' ? 'रिपोर्ट सफलतापूर्वक सेव हो गई!' : 'Report saved successfully!';
+            showNotification(successText);
+        }
+        
+        function shareResult() {
+            const riskLevel = document.getElementById('riskLevel').textContent;
+            const confidence = document.getElementById('confidence').textContent;
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const shareText = currentLang === 'hi' ? 
+                `AI-नेमिया का पता लगाने का परिणाम:\nजोखिम स्तर: ${riskLevel}\nविश्वसनीयता: ${confidence}\n\nAI-नेमिया ऐप द्वारा जेनरेट किया गया` :
+                `AI-nemia Detection Result:\nRisk Level: ${riskLevel}\nConfidence: ${confidence}\n\nGenerated by AI-nemia App`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: currentLang === 'hi' ? 'AI-नेमिया का पता लगाने का परिणाम' : 'AI-nemia Detection Result',
+                    text: shareText
+                });
+            } else {
+                // Fallback for browsers that don't support native sharing
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+        
+        function resetDetection() {
+            currentImage = null;
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const noImageText = currentLang === 'hi' ? 'कोई छवि चयनित नहीं' : 'No image selected';
+            
+            document.getElementById('imagePreview').innerHTML = `<i class="fas fa-image preview-icon"></i><p>${noImageText}</p>`;
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

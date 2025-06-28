@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="Profile" data-hi="प्रोफ़ाइल">Profile</h1>
+            <div class="header-controls">
+                <div class="language-selector">
+                    <select id="languageSelect" onchange="changeLanguage()">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                </div>
+                <button class="edit-btn" onclick="toggleEditMode()">
+                    <i class="fas fa-edit" id="editIcon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div class="profile-content">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="profile-info">
+                    <h2 id="profileName" data-en="User Name" data-hi="उपयोगकर्ता नाम">User Name</h2>
+                    <p id="profileRole" data-en="Patient" data-hi="रोगी">Patient</p>
+                </div>
+            </div>
+            
+            <div class="profile-sections">
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-user"></i>
+                        <h3 data-en="Personal Information" data-hi="व्यक्तिगत जानकारी">Personal Information</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-group">
+                            <label data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+                            <div class="info-display">
+                                <span id="displayName" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="text" id="editName" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Email" data-hi="ईमेल">Email</label>
+                            <div class="info-display">
+                                <span id="displayEmail" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="email" id="editEmail" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Phone Number" data-hi="फोन नंबर">Phone Number</label>
+                            <div class="info-display">
+                                <span id="displayPhone" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="tel" id="editPhone" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Date of Birth" data-hi="जन्म तिथि">Date of Birth</label>
+                            <div class="info-display">
+                                <span id="displayDOB" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="date" id="editDOB" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Address" data-hi="पता">Address</label>
+                            <div class="info-display">
+                                <span id="displayAddress" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <textarea id="editAddress" style="display: none;" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-baby"></i>
+                        <h3 data-en="Pregnancy Information" data-hi="गर्भावस्था की जानकारी">Pregnancy Information</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-group">
+                            <label data-en="Expected Due Date" data-hi="अपेक्षित प्रसव तिथि">Expected Due Date</label>
+                            <div class="info-display">
+                                <span id="displayDueDate" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="date" id="editDueDate" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Current Week" data-hi="वर्तमान सप्ताह">Current Week</label>
+                            <div class="info-display">
+                                <span id="displayCurrentWeek" data-en="Not calculated" data-hi="गणना नहीं की गई">Not calculated</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Previous Pregnancies" data-hi="पिछली गर्भावस्था">Previous Pregnancies</label>
+                            <div class="info-display">
+                                <span id="displayPreviousPregnancies">0</span>
+                                <input type="number" id="editPreviousPregnancies" min="0" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Blood Group" data-hi="रक्त समूह">Blood Group</label>
+                            <div class="info-display">
+                                <span id="displayBloodGroup" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <select id="editBloodGroup" style="display: none;">
+                                    <option value="" data-en="Select Blood Group" data-hi="रक्त समूह चुनें">Select Blood Group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-phone-alt"></i>
+                        <h3 data-en="Emergency Contacts" data-hi="आपातकालीन संपर्क">Emergency Contacts</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-group">
+                            <label data-en="Primary Emergency Contact" data-hi="प्राथमिक आपातकालीन संपर्क">Primary Emergency Contact</label>
+                            <div class="info-display">
+                                <span id="displayEmergencyContact1" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="text" id="editEmergencyContact1" data-placeholder-en="Name: Phone" data-placeholder-hi="नाम: फोन" placeholder="Name: Phone" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Secondary Emergency Contact" data-hi="द्वितीयक आपातकालीन संपर्क">Secondary Emergency Contact</label>
+                            <div class="info-display">
+                                <span id="displayEmergencyContact2" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="text" id="editEmergencyContact2" data-placeholder-en="Name: Phone" data-placeholder-hi="नाम: फोन" placeholder="Name: Phone" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="ASHA Worker Contact" data-hi="आशा कार्यकर्ता संपर्क">ASHA Worker Contact</label>
+                            <div class="info-display">
+                                <span id="displayASHAContact" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="tel" id="editASHAContact" data-placeholder-en="ASHA Worker Phone" data-placeholder-hi="आशा कार्यकर्ता फोन" placeholder="ASHA Worker Phone" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label data-en="Doctor/Clinic Contact" data-hi="डॉक्टर/क्लिनिक संपर्क">Doctor/Clinic Contact</label>
+                            <div class="info-display">
+                                <span id="displayDoctorContact" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</span>
+                                <input type="text" id="editDoctorContact" data-placeholder-en="Doctor/Clinic: Phone" data-placeholder-hi="डॉक्टर/क्लिनिक: फोन" placeholder="Doctor/Clinic: Phone" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-cog"></i>
+                        <h3 data-en="Settings" data-hi="सेटिंग्स">Settings</h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="setting-group">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4 data-en="Notifications" data-hi="सूचनाएं">Notifications</h4>
+                                    <p data-en="Receive reminders and health alerts" data-hi="रिमाइंडर और स्वास्थ्य अलर्ट प्राप्त करें">Receive reminders and health alerts</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="notificationsEnabled" onchange="updateSetting('notifications', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4 data-en="Iron Tablet Reminders" data-hi="आयरन टैबलेट रिमाइंडर">Iron Tablet Reminders</h4>
+                                    <p data-en="Daily reminders for iron supplements" data-hi="आयरन सप्लीमेंट के लिए दैनिक रिमाइंडर">Daily reminders for iron supplements</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="ironRemindersEnabled" onchange="updateSetting('ironReminders', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4 data-en="Language" data-hi="भाषा">Language</h4>
+                                    <p data-en="Choose your preferred language" data-hi="अपनी पसंदीदा भाषा चुनें">Choose your preferred language</p>
+                                </div>
+                                <select id="languageSelectSetting" onchange="updateSetting('language', this.value)">
+                                    <option value="en">English</option>
+                                    <option value="hi">हिंदी</option>
+                                    <option value="te">తెలుగు</option>
+                                </select>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4 data-en="Data Sharing" data-hi="डेटा साझाकरण">Data Sharing</h4>
+                                    <p data-en="Share anonymized data for research" data-hi="अनुसंधान के लिए गुमनाम डेटा साझा करें">Share anonymized data for research</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="dataSharingEnabled" onchange="updateSetting('dataSharing', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="save-btn" id="saveBtn" onclick="saveProfile()" style="display: none;">
+                        <i class="fas fa-save"></i>
+                        <span data-en="Save Changes" data-hi="परिवर्तन सेव करें">Save Changes</span>
+                    </button>
+                    
+                    <button class="secondary-btn" onclick="exportProfile()">
+                        <i class="fas fa-download"></i>
+                        <span data-en="Export Profile" data-hi="प्रोफ़ाइल निर्यात करें">Export Profile</span>
+                    </button>
+                    
+                    <button class="danger-btn" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i>
+                        <span data-en="Clear All Data" data-hi="सभी डेटा साफ़ करें">Clear All Data</span>
+                    </button>
+                    
+                    <button class="ghost-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-en="Logout" data-hi="लॉगआउट">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let isEditMode = false;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+            loadSettings();
+            updatePlaceholders();
+        });
+        
+        function loadProfile() {
+            const user = getCurrentUser();
+            const profile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            // Load basic info
+            document.getElementById('profileName').textContent = user?.name || profile.name || (currentLang === 'hi' ? 'उपयोगकर्ता नाम' : 'User Name');
+            document.getElementById('profileRole').textContent = user?.role === 'health-worker' ? 
+                (currentLang === 'hi' ? 'स्वास्थ्य कार्यकर्ता' : 'Health Worker') : 
+                (currentLang === 'hi' ? 'रोगी' : 'Patient');
+            
+            // Load personal information
+            const notSetText = currentLang === 'hi' ? 'सेट नहीं किया गया' : 'Not set';
+            document.getElementById('displayName').textContent = profile.name || notSetText;
+            document.getElementById('displayEmail').textContent = profile.email || notSetText;
+            document.getElementById('displayPhone').textContent = profile.phone || notSetText;
+            document.getElementById('displayDOB').textContent = profile.dob || notSetText;
+            document.getElementById('displayAddress').textContent = profile.address || notSetText;
+            
+            // Load pregnancy information
+            const dueDate = localStorage.getItem('pregnancy_due_date');
+            document.getElementById('displayDueDate').textContent = dueDate ? new Date(dueDate).toLocaleDateString() : notSetText;
+            
+            if (dueDate) {
+                const currentWeek = calculateCurrentWeek(new Date(dueDate));
+                const weekText = currentLang === 'hi' ? `सप्ताह ${currentWeek}` : `Week ${currentWeek}`;
+                document.getElementById('displayCurrentWeek').textContent = weekText;
+            } else {
+                const notCalculatedText = currentLang === 'hi' ? 'गणना नहीं की गई' : 'Not calculated';
+                document.getElementById('displayCurrentWeek').textContent = notCalculatedText;
+            }
+            
+            document.getElementById('displayPreviousPregnancies').textContent = profile.previousPregnancies || '0';
+            document.getElementById('displayBloodGroup').textContent = profile.bloodGroup || notSetText;
+            
+            // Load emergency contacts
+            document.getElementById('displayEmergencyContact1').textContent = profile.emergencyContact1 || notSetText;
+            document.getElementById('displayEmergencyContact2').textContent = profile.emergencyContact2 || notSetText;
+            document.getElementById('displayASHAContact').textContent = localStorage.getItem('asha_contact') || notSetText;
+            document.getElementById('displayDoctorContact').textContent = profile.doctorContact || notSetText;
+            
+            // Populate edit fields
+            populateEditFields(profile);
+        }
+        
+        function populateEditFields(profile) {
+            document.getElementById('editName').value = profile.name || '';
+            document.getElementById('editEmail').value = profile.email || '';
+            document.getElementById('editPhone').value = profile.phone || '';
+            document.getElementById('editDOB').value = profile.dob || '';
+            document.getElementById('editAddress').value = profile.address || '';
+            
+            const dueDate = localStorage.getItem('pregnancy_due_date');
+            if (dueDate) {
+                document.getElementById('editDueDate').value = new Date(dueDate).toISOString().split('T')[0];
+            }
+            
+            document.getElementById('editPreviousPregnancies').value = profile.previousPregnancies || '0';
+            document.getElementById('editBloodGroup').value = profile.bloodGroup || '';
+            document.getElementById('editEmergencyContact1').value = profile.emergencyContact1 || '';
+            document.getElementById('editEmergencyContact2').value = profile.emergencyContact2 || '';
+            document.getElementById('editASHAContact').value = localStorage.getItem('asha_contact') || '';
+            document.getElementById('editDoctorContact').value = profile.doctorContact || '';
+        }
+        
+        function updatePlaceholders() {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            // Update placeholders based on language
+            const placeholderElements = document.querySelectorAll('[data-placeholder-en]');
+            placeholderElements.forEach(element => {
+                const placeholder = element.getAttribute(`data-placeholder-${currentLang}`);
+                if (placeholder) {
+                    element.placeholder = placeholder;
+                }
+            });
+        }
+        
+        function loadSettings() {
+            document.getElementById('notificationsEnabled').checked = localStorage.getItem('notifications_enabled') !== 'false';
+            document.getElementById('ironRemindersEnabled').checked = localStorage.getItem('iron_reminder_enabled') === 'true';
+            document.getElementById('languageSelectSetting').value = localStorage.getItem('app_language') || 'en';
+            document.getElementById('dataSharingEnabled').checked = localStorage.getItem('data_sharing_enabled') === 'true';
+        }
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editIcon = document.getElementById('editIcon');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            if (isEditMode) {
+                editIcon.className = 'fas fa-times';
+                saveBtn.style.display = 'block';
+                showEditFields();
+            } else {
+                editIcon.className = 'fas fa-edit';
+                saveBtn.style.display = 'none';
+                hideEditFields();
+                loadProfile(); // Reload to discard changes
+            }
+        }
+        
+        function showEditFields() {
+            document.querySelectorAll('.info-display span').forEach(span => {
+                span.style.display = 'none';
+            });
+            document.querySelectorAll('.info-display input, .info-display textarea, .info-display select').forEach(input => {
+                input.style.display = 'block';
+            });
+        }
+        
+        function hideEditFields() {
+            document.querySelectorAll('.info-display span').forEach(span => {
+                span.style.display = 'block';
+            });
+            document.querySelectorAll('.info-display input, .info-display textarea, .info-display select').forEach(input => {
+                input.style.display = 'none';
+            });
+        }
+        
+        function saveProfile() {
+            const profile = {
+                name: document.getElementById('editName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                dob: document.getElementById('editDOB').value,
+                address: document.getElementById('editAddress').value,
+                previousPregnancies: document.getElementById('editPreviousPregnancies').value,
+                bloodGroup: document.getElementById('editBloodGroup').value,
+                emergencyContact1: document.getElementById('editEmergencyContact1').value,
+                emergencyContact2: document.getElementById('editEmergencyContact2').value,
+                doctorContact: document.getElementById('editDoctorContact').value,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // Save profile
+            localStorage.setItem('user_profile', JSON.stringify(profile));
+            
+            // Save due date separately
+            const dueDate = document.getElementById('editDueDate').value;
+            if (dueDate) {
+                localStorage.setItem('pregnancy_due_date', new Date(dueDate).toISOString());
+            }
+            
+            // Save ASHA contact separately
+            const ashaContact = document.getElementById('editASHAContact').value;
+            if (ashaContact) {
+                localStorage.setItem('asha_contact', ashaContact);
+            }
+            
+            // Update current user if logged in
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                currentUser.name = profile.name;
+                currentUser.email = profile.email;
+                localStorage.setItem('current_user', JSON.stringify(currentUser));
+            }
+            
+            toggleEditMode();
+            loadProfile();
+            
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const savedText = currentLang === 'hi' ? 'प्रोफ़ाइल सफलतापूर्वक सेव हो गई!' : 'Profile saved successfully!';
+            showNotification(savedText);
+        }
+        
+        function updateSetting(setting, value) {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            switch (setting) {
+                case 'notifications':
+                    localStorage.setItem('notifications_enabled', value);
+                    break;
+                case 'ironReminders':
+                    localStorage.setItem('iron_reminder_enabled', value);
+                    break;
+                case 'language':
+                    localStorage.setItem('app_language', value);
+                    changeLanguage(value);
+                    // Update the main language selector too
+                    document.getElementById('languageSelect').value = value;
+                    // Reload profile to update language
+                    setTimeout(() => {
+                        loadProfile();
+                        updatePlaceholders();
+                    }, 100);
+                    break;
+                case 'dataSharing':
+                    localStorage.setItem('data_sharing_enabled', value);
+                    break;
+            }
+            
+            const updatedText = currentLang === 'hi' ? 'सेटिंग सफलतापूर्वक अपडेट हो गई!' : 'Setting updated successfully!';
+            showNotification(updatedText);
+        }
+        
+        function calculateCurrentWeek(dueDate) {
+            const now = new Date();
+            const timeDiff = dueDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            const totalDays = 280; // 40 weeks
+            const daysPassed = totalDays - daysDiff;
+            return Math.max(1, Math.min(42, Math.ceil(daysPassed / 7)));
+        }
+        
+        function exportProfile() {
+            const profile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+            const reports = getAllReports();
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const exportData = {
+                profile,
+                dueDate: localStorage.getItem('pregnancy_due_date'),
+                reports: reports.length,
+                exportDate: new Date().toISOString(),
+                appVersion: '1.0.0'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `ainemia_profile_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            const exportedText = currentLang === 'hi' ? 'प्रोफ़ाइल सफलतापूर्वक निर्यात हो गई!' : 'Profile exported successfully!';
+            showNotification(exportedText);
+        }
+        
+        function clearAllData() {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const confirmText1 = currentLang === 'hi' ? 
+                'क्या आप वाकई सभी डेटा साफ़ करना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।' :
+                'Are you sure you want to clear all data? This action cannot be undone.';
+            
+            if (confirm(confirmText1)) {
+                const confirmText2 = currentLang === 'hi' ? 
+                    'यह आपकी सभी रिपोर्ट, सेटिंग्स और प्रोफ़ाइल जानकारी हटा देगा। जारी रखें?' :
+                    'This will delete all your reports, settings, and profile information. Continue?';
+                
+                if (confirm(confirmText2)) {
+                    // Clear all localStorage except for essential app data
+                    const keysToKeep = ['app_language'];
+                    const allKeys = Object.keys(localStorage);
+                    
+                    allKeys.forEach(key => {
+                        if (!keysToKeep.includes(key)) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    
+                    const clearedText = currentLang === 'hi' ? 'सभी डेटा सफलतापूर्वक साफ़ हो गया!' : 'All data cleared successfully!';
+                    showNotification(clearedText);
+                    
+                    // Redirect to splash screen after a delay
+                    setTimeout(() => {
+                        navigateTo('index.html');
+                    }, 2000);
+                }
+            }
+        }
+        
+        function logout() {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const confirmText = currentLang === 'hi' ? 'क्या आप वाकई लॉगआउट करना चाहते हैं?' : 'Are you sure you want to logout?';
+            
+            if (confirm(confirmText)) {
+                localStorage.removeItem('current_user');
+                localStorage.removeItem('user_session');
+                
+                const loggedOutText = currentLang === 'hi' ? 'सफलतापूर्वक लॉगआउट हो गए!' : 'Logged out successfully!';
+                showNotification(loggedOutText);
+                
+                setTimeout(() => {
+                    navigateTo('index.html');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

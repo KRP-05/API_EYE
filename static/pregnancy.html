@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Pregnancy Journey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="Pregnancy Journey" data-hi="गर्भावस्था यात्रा">Pregnancy Journey</h1>
+            <div class="header-controls">
+                <div class="language-selector">
+                    <select id="languageSelect" onchange="changeLanguage()">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                </div>
+                <button class="edit-btn" onclick="editDueDate()">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div class="pregnancy-content">
+            <div class="pregnancy-overview">
+                <div class="current-week-card">
+                    <div class="week-display">
+                        <div class="week-number" id="currentWeekNumber" data-en="Week ?" data-hi="सप्ताह ?">Week ?</div>
+                        <div class="week-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span id="progressText" data-en="0% Complete" data-hi="0% पूर्ण">0% Complete</span>
+                        </div>
+                    </div>
+                    
+                    <div class="baby-visualization">
+                        <div class="baby-icon" id="babyIcon">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <div class="baby-size" id="babySize">
+                            <p id="babySizeText" data-en="Setting up..." data-hi="सेट अप कर रहे हैं...">Setting up...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="due-date-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                        <h4 data-en="Expected Due Date" data-hi="अपेक्षित प्रसव तिथि">Expected Due Date</h4>
+                        <p id="dueDateDisplay" data-en="Not set" data-hi="सेट नहीं किया गया">Not set</p>
+                        <p class="days-remaining" id="daysRemaining"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="milestones-section">
+                <h3 data-en="Weekly Milestones & Care" data-hi="साप्ताहिक मील के पत्थर और देखभाल">Weekly Milestones & Care</h3>
+                <div class="milestones-timeline" id="milestonesTimeline">
+                    <!-- Milestones will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h3 data-en="This Week's Tips" data-hi="इस सप्ताह की सुझाव">This Week's Tips</h3>
+                <div class="tips-card" id="weeklyTips">
+                    <!-- Tips will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="appointments-section">
+                <h3 data-en="Upcoming Appointments" data-hi="आगामी अपॉइंटमेंट">Upcoming Appointments</h3>
+                <div class="appointments-list" id="appointmentsList">
+                    <div class="no-appointments">
+                        <i class="fas fa-calendar-plus"></i>
+                        <p data-en="No appointments scheduled" data-hi="कोई अपॉइंटमेंट निर्धारित नहीं">No appointments scheduled</p>
+                        <button class="primary-btn" onclick="addAppointment()">
+                            <i class="fas fa-plus"></i>
+                            <span data-en="Add Appointment" data-hi="अपॉइंटमेंट जोड़ें">Add Appointment</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Due Date Modal -->
+        <div class="modal" id="dueDateModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 data-en="Set Due Date" data-hi="प्रसव तिथि सेट करें">Set Due Date</h3>
+                    <button class="close-btn" onclick="closeDueDateModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p data-en="Please enter your expected due date to track your pregnancy journey:" data-hi="अपनी गर्भावस्था यात्रा को ट्रैक करने के लिए कृपया अपनी अपेक्षित प्रसव तिथि दर्ज करें:">Please enter your expected due date to track your pregnancy journey:</p>
+                    <input type="date" id="dueDateInput" class="date-input">
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-btn" onclick="closeDueDateModal()" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
+                    <button class="primary-btn" onclick="saveDueDate()" data-en="Save" data-hi="सेव करें">Save</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Appointment Modal -->
+        <div class="modal" id="appointmentModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 data-en="Add Appointment" data-hi="अपॉइंटमेंट जोड़ें">Add Appointment</h3>
+                    <button class="close-btn" onclick="closeAppointmentModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label data-en="Type of Appointment" data-hi="अपॉइंटमेंट का प्रकार">Type of Appointment</label>
+                        <select id="appointmentType">
+                            <option value="checkup" data-en="Regular Checkup" data-hi="नियमित जांच">Regular Checkup</option>
+                            <option value="ultrasound" data-en="Ultrasound" data-hi="अल्ट्रासाउंड">Ultrasound</option>
+                            <option value="blood-test" data-en="Blood Test" data-hi="रक्त परीक्षण">Blood Test</option>
+                            <option value="vaccination" data-en="Vaccination" data-hi="टीकाकरण">Vaccination</option>
+                            <option value="other" data-en="Other" data-hi="अन्य">Other</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label data-en="Date & Time" data-hi="दिनांक और समय">Date & Time</label>
+                        <input type="datetime-local" id="appointmentDateTime">
+                    </div>
+                    <div class="input-group">
+                        <label data-en="Healthcare Provider" data-hi="स्वास्थ्य सेवा प्रदाता">Healthcare Provider</label>
+                        <input type="text" id="appointmentProvider" data-placeholder-en="Doctor/Clinic name" data-placeholder-hi="डॉक्टर/क्लिनिक का नाम" placeholder="Doctor/Clinic name">
+                    </div>
+                    <div class="input-group">
+                        <label data-en="Notes" data-hi="नोट्स">Notes</label>
+                        <textarea id="appointmentNotes" data-placeholder-en="Any special instructions or notes" data-placeholder-hi="कोई विशेष निर्देश या नोट्स" placeholder="Any special instructions or notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-btn" onclick="closeAppointmentModal()" data-en="Cancel" data-hi="रद्द करें">Cancel</button>
+                    <button class="primary-btn" onclick="saveAppointment()" data-en="Save" data-hi="सेव करें">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let currentWeek = 0;
+        let dueDate = null;
+        
+        const pregnancyMilestones = {
+            1: { 
+                title: { en: 'Conception', hi: 'गर्भधारण' }, 
+                description: { en: 'Your baby is just a cluster of cells', hi: 'आपका बच्चा केवल कोशिकाओं का एक समूह है' }, 
+                size: { en: 'Poppy seed', hi: 'खसखस का दाना' }, 
+                care: { en: 'Start taking folic acid supplements', hi: 'फोलिक एसिड सप्लीमेंट लेना शुरू करें' } 
+            },
+            4: { 
+                title: { en: 'Implantation', hi: 'प्रत्यारोपण' }, 
+                description: { en: 'Baby implants in the uterine wall', hi: 'बच्चा गर्भाशय की दीवार में प्रत्यारोपित होता है' }, 
+                size: { en: 'Poppy seed', hi: 'खसखस का दाना' }, 
+                care: { en: 'Schedule first prenatal visit', hi: 'पहली प्रसवपूर्व यात्रा निर्धारित करें' } 
+            },
+            8: { 
+                title: { en: 'First Heartbeat', hi: 'पहली दिल की धड़कन' }, 
+                description: { en: 'Heart begins to beat', hi: 'दिल धड़कना शुरू करता है' }, 
+                size: { en: 'Raspberry', hi: 'रसभरी' }, 
+                care: { en: 'Continue prenatal vitamins', hi: 'प्रसवपूर्व विटामिन जारी रखें' } 
+            },
+            12: { 
+                title: { en: 'End of First Trimester', hi: 'पहली तिमाही का अंत' }, 
+                description: { en: 'Major organs formed', hi: 'प्रमुख अंग बने' }, 
+                size: { en: 'Lime', hi: 'नींबू' }, 
+                care: { en: 'First ultrasound screening', hi: 'पहली अल्ट्रासाउंड जांच' } 
+            },
+            16: { 
+                title: { en: 'Gender Reveal', hi: 'लिंग प्रकटीकरण' }, 
+                description: { en: 'Gender can be determined', hi: 'लिंग निर्धारित किया जा सकता है' }, 
+                size: { en: 'Avocado', hi: 'एवोकाडो' }, 
+                care: { en: 'Iron supplements important', hi: 'आयरन सप्लीमेंट महत्वपूर्ण' } 
+            },
+            20: { 
+                title: { en: 'Anatomy Scan', hi: 'शरीर रचना स्कैन' }, 
+                description: { en: 'Detailed ultrasound', hi: 'विस्तृत अल्ट्रासाउंड' }, 
+                size: { en: 'Banana', hi: 'केला' }, 
+                care: { en: 'Anatomy scan appointment', hi: 'शरीर रचना स्कैन अपॉइंटमेंट' } 
+            },
+            24: { 
+                title: { en: 'Viability', hi: 'व्यवहार्यता' }, 
+                description: { en: 'Baby could survive outside womb', hi: 'बच्चा गर्भ के बाहर जीवित रह सकता है' }, 
+                size: { en: 'Corn', hi: 'मक्का' }, 
+                care: { en: 'Glucose screening test', hi: 'ग्लूकोज स्क्रीनिंग टेस्ट' } 
+            },
+            28: { 
+                title: { en: 'Third Trimester', hi: 'तीसरी तिमाही' }, 
+                description: { en: 'Rapid brain development', hi: 'तेजी से मस्तिष्क विकास' }, 
+                size: { en: 'Eggplant', hi: 'बैंगन' }, 
+                care: { en: 'More frequent checkups', hi: 'अधिक बार जांच' } 
+            },
+            32: { 
+                title: { en: 'Preparing for Birth', hi: 'जन्म की तैयारी' }, 
+                description: { en: 'Baby practicing breathing', hi: 'बच्चा सांस लेने का अभ्यास कर रहा है' }, 
+                size: { en: 'Coconut', hi: 'नारियल' }, 
+                care: { en: 'Birth plan discussions', hi: 'जन्म योजना चर्चा' } 
+            },
+            36: { 
+                title: { en: 'Full Term Soon', hi: 'जल्द ही पूर्ण अवधि' }, 
+                description: { en: 'Baby gaining weight rapidly', hi: 'बच्चा तेजी से वजन बढ़ा रहा है' }, 
+                size: { en: 'Papaya', hi: 'पपीता' }, 
+                care: { en: 'Weekly checkups begin', hi: 'साप्ताहिक जांच शुरू' } 
+            },
+            40: { 
+                title: { en: 'Due Date!', hi: 'प्रसव तिथि!' }, 
+                description: { en: 'Baby ready to be born', hi: 'बच्चा जन्म के लिए तैयार' }, 
+                size: { en: 'Watermelon', hi: 'तरबूज' }, 
+                care: { en: 'Ready for delivery', hi: 'प्रसव के लिए तैयार' } 
+            }
+        };
+        
+        const weeklyTips = {
+            1: { 
+                en: ['Take 400mcg of folic acid daily', 'Avoid alcohol and smoking', 'Start tracking your cycle'],
+                hi: ['दैनिक 400mcg फोलिक एसिड लें', 'शराब और धूम्रपान से बचें', 'अपने चक्र को ट्रैक करना शुरू करें']
+            },
+            4: { 
+                en: ['Schedule your first prenatal visit', 'Continue folic acid', 'Eat a balanced diet'],
+                hi: ['अपनी पहली प्रसवपूर्व यात्रा निर्धारित करें', 'फोलिक एसिड जारी रखें', 'संतुलित आहार लें']
+            },
+            8: { 
+                en: ['Morning sickness may begin', 'Stay hydrated', 'Get plenty of rest'],
+                hi: ['सुबह की बीमारी शुरू हो सकती है', 'हाइड्रेटेड रहें', 'भरपूर आराम करें']
+            },
+            12: { 
+                en: ['Share the good news!', 'Consider genetic screening', 'Exercise regularly'],
+                hi: ['खुशखबरी साझा करें!', 'आनुवंशिक जांच पर विचार करें', 'नियमित व्यायाम करें']
+            },
+            16: { 
+                en: ['Start iron supplements', 'Feel for baby movements', 'Plan your maternity leave'],
+                hi: ['आयरन सप्लीमेंट शुरू करें', 'बच्चे की हलचल महसूस करें', 'अपनी मातृत्व छुट्टी की योजना बनाएं']
+            },
+            20: { 
+                en: ['Schedule anatomy scan', 'Start prenatal classes', 'Monitor weight gain'],
+                hi: ['शरीर रचना स्कैन निर्धारित करें', 'प्रसवपूर्व कक्षाएं शुरू करें', 'वजन बढ़ने की निगरानी करें']
+            },
+            24: { 
+                en: ['Watch for preeclampsia signs', 'Take glucose screening test', 'Sleep on your side'],
+                hi: ['प्री-एक्लेम्पसिया के संकेतों पर नजर रखें', 'ग्लूकोज स्क्रीनिंग टेस्ट कराएं', 'अपनी तरफ सोएं']
+            },
+            28: { 
+                en: ['Count baby kicks daily', 'Take childbirth classes', 'Prepare nursery'],
+                hi: ['दैनिक बच्चे की लात गिनें', 'प्रसव कक्षाएं लें', 'नर्सरी तैयार करें']
+            },
+            32: { 
+                en: ['Prepare hospital bag', 'Discuss birth plan', 'Monitor blood pressure'],
+                hi: ['अस्पताल का बैग तैयार करें', 'जन्म योजना पर चर्चा करें', 'रक्तचाप की निगरानी करें']
+            },
+            36: { 
+                en: ['Weekly doctor visits', 'Watch for labor signs', 'Finish baby preparations'],
+                hi: ['साप्ताहिक डॉक्टर की यात्रा', 'प्रसव के संकेतों पर नजर रखें', 'बच्चे की तैयारी पूरी करें']
+            },
+            40: { 
+                en: ['Stay calm and ready', 'Walk regularly', 'Call doctor with labor signs'],
+                hi: ['शांत और तैयार रहें', 'नियमित रूप से चलें', 'प्रसव के संकेतों के साथ डॉक्टर को कॉल करें']
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDueDate();
+            calculateCurrentWeek();
+            displayPregnancyInfo();
+            loadAppointments();
+            updateAppointmentOptions();
+        });
+        
+        function loadDueDate() {
+            const saved = localStorage.getItem('pregnancy_due_date');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (saved) {
+                dueDate = new Date(saved);
+                document.getElementById('dueDateDisplay').textContent = dueDate.toLocaleDateString();
+            } else {
+                // Show due date modal if not set
+                document.getElementById('dueDateModal').style.display = 'flex';
+            }
+        }
+        
+        function calculateCurrentWeek() {
+            if (!dueDate) return;
+            
+            const now = new Date();
+            const timeDiff = dueDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            // Pregnancy is typically 280 days (40 weeks)
+            const totalDays = 280;
+            const daysPassed = totalDays - daysDiff;
+            currentWeek = Math.max(1, Math.min(42, Math.ceil(daysPassed / 7)));
+        }
+        
+        function displayPregnancyInfo() {
+            if (!dueDate) return;
+            
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            // Update current week display
+            const weekText = currentLang === 'hi' ? `सप्ताह ${currentWeek}` : `Week ${currentWeek}`;
+            document.getElementById('currentWeekNumber').textContent = weekText;
+            
+            // Update progress
+            const progress = Math.min(100, (currentWeek / 40) * 100);
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            const progressText = currentLang === 'hi' ? `${Math.round(progress)}% पूर्ण` : `${Math.round(progress)}% Complete`;
+            document.getElementById('progressText').textContent = progressText;
+            
+            // Update baby size
+            const milestone = pregnancyMilestones[currentWeek] || pregnancyMilestones[Math.floor(currentWeek / 4) * 4] || pregnancyMilestones[40];
+            const sizeText = currentLang === 'hi' ? 
+                `${milestone.size[currentLang]} के आकार का` :
+                `Size of a ${milestone.size[currentLang]}`;
+            document.getElementById('babySizeText').textContent = sizeText;
+            
+            // Update days remaining
+            const now = new Date();
+            const timeDiff = dueDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            const daysRemainingEl = document.getElementById('daysRemaining');
+            if (daysDiff > 0) {
+                const remainingText = currentLang === 'hi' ? `${daysDiff} दिन शेष` : `${daysDiff} days remaining`;
+                daysRemainingEl.textContent = remainingText;
+            } else if (daysDiff === 0) {
+                const dueTodayText = currentLang === 'hi' ? 'आज प्रसव तिथि!' : 'Due today!';
+                daysRemainingEl.textContent = dueTodayText;
+            } else {
+                const overdueText = currentLang === 'hi' ? `${Math.abs(daysDiff)} दिन देर से` : `${Math.abs(daysDiff)} days overdue`;
+                daysRemainingEl.textContent = overdueText;
+            }
+            
+            // Display milestones
+            displayMilestones();
+            
+            // Display weekly tips
+            displayWeeklyTips();
+        }
+        
+        function displayMilestones() {
+            const timeline = document.getElementById('milestonesTimeline');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            let timelineHTML = '';
+            
+            // Show milestones around current week
+            const milestoneWeeks = Object.keys(pregnancyMilestones).map(Number).sort((a, b) => a - b);
+            
+            milestoneWeeks.forEach(week => {
+                const milestone = pregnancyMilestones[week];
+                const isPast = week <= currentWeek;
+                const isCurrent = week === currentWeek;
+                
+                const weekText = currentLang === 'hi' ? `सप्ताह ${week}` : `Week ${week}`;
+                
+                timelineHTML += `
+                    <div class="milestone-item ${isPast ? 'completed' : ''} ${isCurrent ? 'current' : ''}">
+                        <div class="milestone-marker">
+                            <i class="fas ${isPast ? 'fa-check' : 'fa-circle'}"></i>
+                        </div>
+                        <div class="milestone-content">
+                            <h4>${weekText}: ${milestone.title[currentLang]}</h4>
+                            <p>${milestone.description[currentLang]}</p>
+                            <div class="milestone-care">
+                                <i class="fas fa-heart"></i>
+                                ${milestone.care[currentLang]}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            timeline.innerHTML = timelineHTML;
+        }
+        
+        function displayWeeklyTips() {
+            const tipsCard = document.getElementById('weeklyTips');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const tips = weeklyTips[currentWeek] || weeklyTips[Math.floor(currentWeek / 4) * 4] || weeklyTips[40];
+            
+            tipsCard.innerHTML = `
+                <div class="tips-list">
+                    ${tips[currentLang].map(tip => `
+                        <div class="tip-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>${tip}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function updateAppointmentOptions() {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const appointmentType = document.getElementById('appointmentType');
+            const appointmentProvider = document.getElementById('appointmentProvider');
+            const appointmentNotes = document.getElementById('appointmentNotes');
+            
+            if (currentLang === 'hi') {
+                appointmentProvider.placeholder = 'डॉक्टर/क्लिनिक का नाम';
+                appointmentNotes.placeholder = 'कोई विशेष निर्देश या नोट्स';
+            } else {
+                appointmentProvider.placeholder = 'Doctor/Clinic name';
+                appointmentNotes.placeholder = 'Any special instructions or notes';
+            }
+        }
+        
+        function editDueDate() {
+            document.getElementById('dueDateInput').value = dueDate ? dueDate.toISOString().split('T')[0] : '';
+            document.getElementById('dueDateModal').style.display = 'flex';
+        }
+        
+        function closeDueDateModal() {
+            document.getElementById('dueDateModal').style.display = 'none';
+        }
+        
+        function saveDueDate() {
+            const dateInput = document.getElementById('dueDateInput').value;
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (!dateInput) {
+                const selectDateText = currentLang === 'hi' ? 'कृपया प्रसव तिथि चुनें' : 'Please select a due date';
+                showNotification(selectDateText);
+                return;
+            }
+            
+            dueDate = new Date(dateInput);
+            localStorage.setItem('pregnancy_due_date', dueDate.toISOString());
+            
+            document.getElementById('dueDateDisplay').textContent = dueDate.toLocaleDateString();
+            calculateCurrentWeek();
+            displayPregnancyInfo();
+            closeDueDateModal();
+            
+            const savedText = currentLang === 'hi' ? 'प्रसव तिथि सफलतापूर्वक सेव हो गई!' : 'Due date saved successfully!';
+            showNotification(savedText);
+        }
+        
+        function addAppointment() {
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(10, 0, 0, 0);
+            
+            document.getElementById('appointmentDateTime').value = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('appointmentModal').style.display = 'flex';
+        }
+        
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'none';
+            // Clear form
+            document.getElementById('appointmentType').value = 'checkup';
+            document.getElementById('appointmentDateTime').value = '';
+            document.getElementById('appointmentProvider').value = '';
+            document.getElementById('appointmentNotes').value = '';
+        }
+        
+        function saveAppointment() {
+            const type = document.getElementById('appointmentType').value;
+            const dateTime = document.getElementById('appointmentDateTime').value;
+            const provider = document.getElementById('appointmentProvider').value;
+            const notes = document.getElementById('appointmentNotes').value;
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (!dateTime || !provider) {
+                const fillFieldsText = currentLang === 'hi' ? 'कृपया आवश्यक फ़ील्ड भरें' : 'Please fill in required fields';
+                showNotification(fillFieldsText);
+                return;
+            }
+            
+            const appointment = {
+                id: Date.now(),
+                type,
+                dateTime,
+                provider,
+                notes,
+                created: new Date().toISOString()
+            };
+            
+            const appointments = JSON.parse(localStorage.getItem('pregnancy_appointments') || '[]');
+            appointments.push(appointment);
+            appointments.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+            
+            localStorage.setItem('pregnancy_appointments', JSON.stringify(appointments));
+            
+            loadAppointments();
+            closeAppointmentModal();
+            
+            const addedText = currentLang === 'hi' ? 'अपॉइंटमेंट सफलतापूर्वक जोड़ा गया!' : 'Appointment added successfully!';
+            showNotification(addedText);
+        }
+        
+        function loadAppointments() {
+            const appointments = JSON.parse(localStorage.getItem('pregnancy_appointments') || '[]');
+            const appointmentsList = document.getElementById('appointmentsList');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            // Filter future appointments
+            const now = new Date();
+            const futureAppointments = appointments.filter(apt => new Date(apt.dateTime) > now);
+            
+            if (futureAppointments.length === 0) {
+                const noAppointmentsText = currentLang === 'hi' ? 'कोई अपॉइंटमेंट निर्धारित नहीं' : 'No appointments scheduled';
+                const addAppointmentText = currentLang === 'hi' ? 'अपॉइंटमेंट जोड़ें' : 'Add Appointment';
+                
+                appointmentsList.innerHTML = `
+                    <div class="no-appointments">
+                        <i class="fas fa-calendar-plus"></i>
+                        <p>${noAppointmentsText}</p>
+                        <button class="primary-btn" onclick="addAppointment()">
+                            <i class="fas fa-plus"></i>
+                            ${addAppointmentText}
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const appointmentTypes = {
+                'checkup': { en: 'Regular Checkup', hi: 'नियमित जांच' },
+                'ultrasound': { en: 'Ultrasound', hi: 'अल्ट्रासाउंड' },
+                'blood-test': { en: 'Blood Test', hi: 'रक्त परीक्षण' },
+                'vaccination': { en: 'Vaccination', hi: 'टीकाकरण' },
+                'other': { en: 'Other', hi: 'अन्य' }
+            };
+            
+            appointmentsList.innerHTML = futureAppointments.map(apt => {
+                const date = new Date(apt.dateTime);
+                const formattedDate = date.toLocaleDateString();
+                const formattedTime = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const appointmentTypeName = appointmentTypes[apt.type] ? appointmentTypes[apt.type][currentLang] : apt.type;
+                
+                return `
+                    <div class="appointment-item">
+                        <div class="appointment-icon">
+                            <i class="fas ${getAppointmentIcon(apt.type)}"></i>
+                        </div>
+                        <div class="appointment-details">
+                            <h4>${appointmentTypeName}</h4>
+                            <p class="appointment-provider">${apt.provider}</p>
+                            <p class="appointment-datetime">${formattedDate} at ${formattedTime}</p>
+                            ${apt.notes ? `<p class="appointment-notes">${apt.notes}</p>` : ''}
+                        </div>
+                        <button class="delete-btn" onclick="deleteAppointment('${apt.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getAppointmentIcon(type) {
+            const icons = {
+                'checkup': 'fa-stethoscope',
+                'ultrasound': 'fa-baby',
+                'blood-test': 'fa-vial',
+                'vaccination': 'fa-syringe',
+                'other': 'fa-calendar'
+            };
+            return icons[type] || 'fa-calendar';
+        }
+        
+        function deleteAppointment(appointmentId) {
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const confirmText = currentLang === 'hi' ? 
+                'क्या आप वाकई इस अपॉइंटमेंट को हटाना चाहते हैं?' :
+                'Are you sure you want to delete this appointment?';
+            
+            if (confirm(confirmText)) {
+                let appointments = JSON.parse(localStorage.getItem('pregnancy_appointments') || '[]');
+                appointments = appointments.filter(apt => apt.id != appointmentId);
+                localStorage.setItem('pregnancy_appointments', JSON.stringify(appointments));
+                
+                loadAppointments();
+                const deletedText = currentLang === 'hi' ? 'अपॉइंटमेंट हटा दिया गया' : 'Appointment deleted';
+                showNotification(deletedText);
+            }
+        }
+        
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

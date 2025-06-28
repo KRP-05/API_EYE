@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - mPatch Vitals</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="mPatch Vitals" data-hi="mPatch वाइटल्स">mPatch Vitals</h1>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="vitals-content">
+            <div class="connection-status" id="connectionStatus">
+                <div class="status-indicator disconnected">
+                    <i class="fas fa-circle"></i>
+                    <span data-en="Device Disconnected" data-hi="डिवाइस डिस्कनेक्ट हो गया">Device Disconnected</span>
+                </div>
+                <button class="connect-btn" onclick="connectDevice()">
+                    <i class="fas fa-bluetooth"></i>
+                    <span data-en="Connect mPatch Device" data-hi="mPatch डिवाइस कनेक्ट करें">Connect mPatch Device</span>
+                </button>
+            </div>
+            
+            <div class="vitals-grid">
+                <div class="vital-card">
+                    <div class="vital-header">
+                        <i class="fas fa-lungs vital-icon"></i>
+                        <h3>SpO2</h3>
+                    </div>
+                    <div class="vital-value">
+                        <span class="value" id="spo2Value">--</span>
+                        <span class="unit">%</span>
+                    </div>
+                    <div class="vital-status normal" id="spo2Status" data-en="Waiting for data" data-hi="डेटा का इंतजार कर रहे हैं">Waiting for data</div>
+                    <div class="vital-trend">
+                        <canvas id="spo2Chart" width="200" height="60"></canvas>
+                    </div>
+                </div>
+                
+                <div class="vital-card">
+                    <div class="vital-header">
+                        <i class="fas fa-heartbeat vital-icon"></i>
+                        <h3 data-en="Heart Rate" data-hi="हृदय गति">Heart Rate</h3>
+                    </div>
+                    <div class="vital-value">
+                        <span class="value" id="heartRateValue">--</span>
+                        <span class="unit">BPM</span>
+                    </div>
+                    <div class="vital-status normal" id="heartRateStatus" data-en="Waiting for data" data-hi="डेटा का इंतजार कर रहे हैं">Waiting for data</div>
+                    <div class="vital-trend">
+                        <canvas id="heartRateChart" width="200" height="60"></canvas>
+                    </div>
+                </div>
+                
+                <div class="vital-card">
+                    <div class="vital-header">
+                        <i class="fas fa-thermometer-half vital-icon"></i>
+                        <h3 data-en="Temperature" data-hi="तापमान">Temperature</h3>
+                    </div>
+                    <div class="vital-value">
+                        <span class="value" id="temperatureValue">--</span>
+                        <span class="unit">°F</span>
+                    </div>
+                    <div class="vital-status normal" id="temperatureStatus" data-en="Waiting for data" data-hi="डेटा का इंतजार कर रहे हैं">Waiting for data</div>
+                    <div class="vital-trend">
+                        <canvas id="temperatureChart" width="200" height="60"></canvas>
+                    </div>
+                </div>
+                
+                <div class="vital-card">
+                    <div class="vital-header">
+                        <i class="fas fa-tint vital-icon"></i>
+                        <h3 data-en="Blood Pressure" data-hi="रक्तचाप">Blood Pressure</h3>
+                    </div>
+                    <div class="vital-value">
+                        <span class="value" id="bpValue">--/--</span>
+                        <span class="unit">mmHg</span>
+                    </div>
+                    <div class="vital-status normal" id="bpStatus" data-en="Waiting for data" data-hi="डेटा का इंतजार कर रहे हैं">Waiting for data</div>
+                    <div class="vital-trend">
+                        <canvas id="bpChart" width="200" height="60"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="measurement-history">
+                <h3 data-en="Recent Measurements" data-hi="हाल की माप">Recent Measurements</h3>
+                <div class="history-list" id="historyList">
+                    <div class="no-data">
+                        <i class="fas fa-chart-line"></i>
+                        <p data-en="No measurements yet" data-hi="अभी तक कोई माप नहीं">No measurements yet</p>
+                        <p data-en="Connect your mPatch device to start monitoring" data-hi="निगरानी शुरू करने के लिए अपना mPatch डिवाइस कनेक्ट करें">Connect your mPatch device to start monitoring</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="primary-btn" onclick="saveVitals()" disabled id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    <span data-en="Save Measurements" data-hi="माप सेव करें">Save Measurements</span>
+                </button>
+                <button class="secondary-btn" onclick="exportVitals()">
+                    <i class="fas fa-download"></i>
+                    <span data-en="Export History" data-hi="इतिहास निर्यात करें">Export History</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let isConnected = false;
+        let vitalsInterval = null;
+        let measurements = [];
+        
+        function connectDevice() {
+            const connectBtn = document.querySelector('.connect-btn');
+            const statusIndicator = document.querySelector('.status-indicator');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            // Show connecting state
+            const connectingText = currentLang === 'hi' ? 'कनेक्ट कर रहे हैं...' : 'Connecting...';
+            connectBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${connectingText}`;
+            connectBtn.disabled = true;
+            
+            // Simulate connection process
+            setTimeout(() => {
+                isConnected = true;
+                statusIndicator.className = 'status-indicator connected';
+                
+                const connectedText = currentLang === 'hi' ? 'डिवाइस कनेक्ट हो गया' : 'Device Connected';
+                statusIndicator.innerHTML = `<i class="fas fa-circle"></i><span>${connectedText}</span>`;
+                
+                const disconnectText = currentLang === 'hi' ? 'डिवाइस डिस्कनेक्ट करें' : 'Disconnect Device';
+                connectBtn.innerHTML = `<i class="fas fa-unlink"></i> ${disconnectText}`;
+                connectBtn.onclick = disconnectDevice;
+                connectBtn.disabled = false;
+                
+                // Start generating mock vital signs
+                startVitalsMonitoring();
+                const successText = currentLang === 'hi' ? 'mPatch डिवाइस सफलतापूर्वक कनेक्ट हो गया!' : 'mPatch device connected successfully!';
+                showNotification(successText);
+            }, 2000);
+        }
+        
+        function disconnectDevice() {
+            isConnected = false;
+            const connectBtn = document.querySelector('.connect-btn');
+            const statusIndicator = document.querySelector('.status-indicator');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            statusIndicator.className = 'status-indicator disconnected';
+            const disconnectedText = currentLang === 'hi' ? 'डिवाइस डिस्कनेक्ट हो गया' : 'Device Disconnected';
+            statusIndicator.innerHTML = `<i class="fas fa-circle"></i><span>${disconnectedText}</span>`;
+            
+            const connectText = currentLang === 'hi' ? 'mPatch डिवाइस कनेक्ट करें' : 'Connect mPatch Device';
+            connectBtn.innerHTML = `<i class="fas fa-bluetooth"></i> ${connectText}`;
+            connectBtn.onclick = connectDevice;
+            
+            // Stop monitoring
+            if (vitalsInterval) {
+                clearInterval(vitalsInterval);
+                vitalsInterval = null;
+            }
+            
+            // Reset display
+            resetVitalsDisplay();
+            const disconnectNotification = currentLang === 'hi' ? 'डिवाइस डिस्कनेक्ट हो गया' : 'Device disconnected';
+            showNotification(disconnectNotification);
+        }
+        
+        function startVitalsMonitoring() {
+            vitalsInterval = setInterval(() => {
+                if (isConnected) {
+                    generateMockVitals();
+                }
+            }, 5000); // Update every 5 seconds
+            
+            document.getElementById('saveBtn').disabled = false;
+        }
+        
+        function generateMockVitals() {
+            const timestamp = new Date();
+            
+            // Generate realistic vital signs
+            const spo2 = 95 + Math.floor(Math.random() * 5); // 95-99%
+            const heartRate = 70 + Math.floor(Math.random() * 30); // 70-100 BPM
+            const temperature = 98.0 + (Math.random() * 2); // 98.0-100.0°F
+            const systolic = 110 + Math.floor(Math.random() * 20); // 110-130
+            const diastolic = 70 + Math.floor(Math.random() * 10); // 70-80
+            
+            // Update display
+            document.getElementById('spo2Value').textContent = spo2;
+            document.getElementById('heartRateValue').textContent = heartRate;
+            document.getElementById('temperatureValue').textContent = temperature.toFixed(1);
+            document.getElementById('bpValue').textContent = `${systolic}/${diastolic}`;
+            
+            // Update status
+            updateVitalStatus('spo2', spo2, 95, 100);
+            updateVitalStatus('heartRate', heartRate, 60, 100);
+            updateVitalStatus('temperature', temperature, 97.0, 99.5);
+            updateVitalStatus('bp', systolic, 90, 140);
+            
+            // Store measurement
+            const measurement = {
+                timestamp: timestamp.toISOString(),
+                spo2,
+                heartRate,
+                temperature,
+                bloodPressure: `${systolic}/${diastolic}`
+            };
+            
+            measurements.push(measurement);
+            if (measurements.length > 50) {
+                measurements = measurements.slice(-50); // Keep only last 50 measurements
+            }
+            
+            updateHistoryDisplay();
+        }
+        
+        function updateVitalStatus(type, value, min, max) {
+            const statusElement = document.getElementById(`${type}Status`);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (value < min || value > max) {
+                statusElement.className = 'vital-status warning';
+                const attentionText = currentLang === 'hi' ? 'ध्यान देने की जरूरत' : 'Attention needed';
+                statusElement.textContent = attentionText;
+            } else {
+                statusElement.className = 'vital-status normal';
+                const normalText = currentLang === 'hi' ? 'सामान्य' : 'Normal';
+                statusElement.textContent = normalText;
+            }
+        }
+        
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            if (measurements.length === 0) return;
+            
+            const recent = measurements.slice(-5).reverse(); // Show last 5 measurements
+            historyList.innerHTML = recent.map(m => {
+                const time = new Date(m.timestamp).toLocaleTimeString();
+                return `<div class="history-item">
+                    <div class="history-time">${time}</div>
+                    <div class="history-values">
+                        <span>SpO2: ${m.spo2}%</span>
+                        <span>HR: ${m.heartRate} BPM</span>
+                        <span>Temp: ${m.temperature.toFixed(1)}°F</span>
+                        <span>BP: ${m.bloodPressure}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        function saveVitals() {
+            if (measurements.length === 0) {
+                const currentLang = localStorage.getItem('app_language') || 'en';
+                const noDataText = currentLang === 'hi' ? 'सेव करने के लिए कोई माप नहीं' : 'No measurements to save';
+                showNotification(noDataText);
+                return;
+            }
+            
+            const report = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                type: 'Vital Signs',
+                measurements: measurements,
+                summary: {
+                    avgSpO2: Math.round(measurements.reduce((sum, m) => sum + m.spo2, 0) / measurements.length),
+                    avgHeartRate: Math.round(measurements.reduce((sum, m) => sum + m.heartRate, 0) / measurements.length),
+                    avgTemperature: (measurements.reduce((sum, m) => sum + m.temperature, 0) / measurements.length).toFixed(1)
+                }
+            };
+            
+            saveReportToStorage(report);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const successText = currentLang === 'hi' ? 'वाइटल साइन्स सफलतापूर्वक सेव हो गए!' : 'Vital signs saved successfully!';
+            showNotification(successText);
+        }
+        
+        function exportVitals() {
+            if (measurements.length === 0) {
+                const currentLang = localStorage.getItem('app_language') || 'en';
+                const noDataText = currentLang === 'hi' ? 'निर्यात करने के लिए कोई डेटा नहीं' : 'No data to export';
+                showNotification(noDataText);
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,SpO2 (%),Heart Rate (BPM),Temperature (°F),Blood Pressure (mmHg)\n";
+            
+            measurements.forEach(m => {
+                csvContent += `${m.timestamp},${m.spo2},${m.heartRate},${m.temperature.toFixed(1)},${m.bloodPressure}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `vitals_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function resetVitalsDisplay() {
+            document.getElementById('spo2Value').textContent = '--';
+            document.getElementById('heartRateValue').textContent = '--';
+            document.getElementById('temperatureValue').textContent = '--';
+            document.getElementById('bpValue').textContent = '--/--';
+            
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const waitingText = currentLang === 'hi' ? 'डेटा का इंतजार कर रहे हैं' : 'Waiting for data';
+            
+            document.querySelectorAll('.vital-status').forEach(status => {
+                status.className = 'vital-status normal';
+                status.textContent = waitingText;
+            });
+            
+            document.getElementById('saveBtn').disabled = true;
+            measurements = [];
+            
+            const historyList = document.getElementById('historyList');
+            const noMeasurementsText = currentLang === 'hi' ? 'अभी तक कोई माप नहीं' : 'No measurements yet';
+            const connectDeviceText = currentLang === 'hi' ? 'निगरानी शुरू करने के लिए अपना mPatch डिवाइस कनेक्ट करें' : 'Connect your mPatch device to start monitoring';
+            
+            historyList.innerHTML = `<div class="no-data">
+                <i class="fas fa-chart-line"></i>
+                <p>${noMeasurementsText}</p>
+                <p>${connectDeviceText}</p>
+            </div>`;
+        }
+    </script>
+</body>
+</html>

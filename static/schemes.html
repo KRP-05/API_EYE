@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Government Schemes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="Government Schemes" data-hi="सरकारी योजनाएं">Government Schemes</h1>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="schemes-content">
+            <div class="schemes-intro">
+                <div class="intro-card">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <h3 data-en="Healthcare Support Programs" data-hi="स्वास्थ्य सहायता कार्यक्रम">Healthcare Support Programs</h3>
+                        <p data-en="Learn about government schemes available for pregnant women and new mothers in India" data-hi="भारत में गर्भवती महिलाओं और नई माताओं के लिए उपलब्ध सरकारी योजनाओं के बारे में जानें">Learn about government schemes available for pregnant women and new mothers in India</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="schemes-list">
+                <div class="scheme-card featured">
+                    <div class="scheme-header">
+                        <div class="scheme-icon">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <div class="scheme-title">
+                            <h3>Janani Suraksha Yojana (JSY)</h3>
+                            <p class="scheme-subtitle" data-en="Safe Motherhood Scheme" data-hi="सुरक्षित मातृत्व योजना">Safe Motherhood Scheme</p>
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-content">
+                        <div class="scheme-benefits">
+                            <h4 data-en="Benefits:" data-hi="लाभ:">Benefits:</h4>
+                            <ul>
+                                <li data-en="Cash assistance for institutional delivery" data-hi="संस्थागत प्रसव के लिए नकद सहायता">Cash assistance for institutional delivery</li>
+                                <li data-en="₹1,400 for rural areas, ₹1,000 for urban areas" data-hi="ग्रामीण क्षेत्रों के लिए ₹1,400, शहरी क्षेत्रों के लिए ₹1,000">₹1,400 for rural areas, ₹1,000 for urban areas</li>
+                                <li data-en="Free antenatal care" data-hi="मुफ्त प्रसवपूर्व देखभाल">Free antenatal care</li>
+                                <li data-en="Post-natal care support" data-hi="प्रसवोत्तर देखभाल सहायता">Post-natal care support</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-eligibility">
+                            <h4 data-en="Eligibility:" data-hi="पात्रता:">Eligibility:</h4>
+                            <ul>
+                                <li data-en="Pregnant women from BPL families" data-hi="बीपीएल परिवारों की गर्भवती महिलाएं">Pregnant women from BPL families</li>
+                                <li data-en="Women aged 19 years and above" data-hi="19 वर्ष और उससे अधिक आयु की महिलाएं">Women aged 19 years and above</li>
+                                <li data-en="Maximum of 2 live births" data-hi="अधिकतम 2 जीवित जन्म">Maximum of 2 live births</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-actions">
+                            <button class="primary-btn" onclick="checkEligibility('JSY')">
+                                <i class="fas fa-check-circle"></i>
+                                <span data-en="Check Eligibility" data-hi="पात्रता जांचें">Check Eligibility</span>
+                            </button>
+                            <button class="secondary-btn" onclick="learnMore('JSY')">
+                                <i class="fas fa-info"></i>
+                                <span data-en="Learn More" data-hi="और जानें">Learn More</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scheme-card">
+                    <div class="scheme-header">
+                        <div class="scheme-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="scheme-title">
+                            <h3>Pradhan Mantri Matru Vandana Yojana (PMMVY)</h3>
+                            <p class="scheme-subtitle" data-en="Maternity Benefit Programme" data-hi="मातृत्व लाभ कार्यक्रम">Maternity Benefit Programme</p>
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-content">
+                        <div class="scheme-benefits">
+                            <h4 data-en="Benefits:" data-hi="लाभ:">Benefits:</h4>
+                            <ul>
+                                <li data-en="₹5,000 cash benefit in 3 installments" data-hi="3 किस्तों में ₹5,000 नकद लाभ">₹5,000 cash benefit in 3 installments</li>
+                                <li data-en="Support for first living child" data-hi="पहले जीवित बच्चे के लिए सहायता">Support for first living child</li>
+                                <li data-en="Compensation for wage loss" data-hi="मजदूरी हानि के लिए मुआवजा">Compensation for wage loss</li>
+                                <li data-en="Better nutrition and care" data-hi="बेहतर पोषण और देखभाल">Better nutrition and care</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-eligibility">
+                            <h4 data-en="Eligibility:" data-hi="पात्रता:">Eligibility:</h4>
+                            <ul>
+                                <li data-en="Pregnant & lactating women" data-hi="गर्भवती और स्तनपान कराने वाली महिलाएं">Pregnant & lactating women</li>
+                                <li data-en="Age 19 years and above" data-hi="19 वर्ष और उससे अधिक आयु">Age 19 years and above</li>
+                                <li data-en="For first living child only" data-hi="केवल पहले जीवित बच्चे के लिए">For first living child only</li>
+                                <li data-en="Exclude women in regular employment" data-hi="नियमित रोजगार में महिलाओं को छोड़कर">Exclude women in regular employment</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-actions">
+                            <button class="primary-btn" onclick="checkEligibility('PMMVY')">
+                                <i class="fas fa-check-circle"></i>
+                                <span data-en="Check Eligibility" data-hi="पात्रता जांचें">Check Eligibility</span>
+                            </button>
+                            <button class="secondary-btn" onclick="learnMore('PMMVY')">
+                                <i class="fas fa-info"></i>
+                                <span data-en="Learn More" data-hi="और जानें">Learn More</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scheme-card">
+                    <div class="scheme-header">
+                        <div class="scheme-icon">
+                            <i class="fas fa-plus-square"></i>
+                        </div>
+                        <div class="scheme-title">
+                            <h3>Ayushman Bharat</h3>
+                            <p class="scheme-subtitle">Pradhan Mantri Jan Arogya Yojana</p>
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-content">
+                        <div class="scheme-benefits">
+                            <h4 data-en="Benefits:" data-hi="लाभ:">Benefits:</h4>
+                            <ul>
+                                <li data-en="₹5 lakh per family per year coverage" data-hi="प्रति परिवार प्रति वर्ष ₹5 लाख कवरेज">₹5 lakh per family per year coverage</li>
+                                <li data-en="Cashless treatment at empaneled hospitals" data-hi="सूचीबद्ध अस्पतालों में कैशलेस उपचार">Cashless treatment at empaneled hospitals</li>
+                                <li data-en="Coverage for maternity care" data-hi="मातृत्व देखभाल के लिए कवरेज">Coverage for maternity care</li>
+                                <li data-en="Pre and post hospitalization expenses" data-hi="अस्पताल में भर्ती से पहले और बाद के खर्च">Pre and post hospitalization expenses</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-eligibility">
+                            <h4 data-en="Eligibility:" data-hi="पात्रता:">Eligibility:</h4>
+                            <ul>
+                                <li data-en="Families identified in SECC 2011" data-hi="SECC 2011 में पहचाने गए परिवार">Families identified in SECC 2011</li>
+                                <li data-en="Rural and urban poor families" data-hi="ग्रामीण और शहरी गरीब परिवार">Rural and urban poor families</li>
+                                <li data-en="Based on deprivation criteria" data-hi="वंचना मानदंड के आधार पर">Based on deprivation criteria</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-actions">
+                            <button class="primary-btn" onclick="checkEligibility('Ayushman')">
+                                <i class="fas fa-check-circle"></i>
+                                <span data-en="Check Eligibility" data-hi="पात्रता जांचें">Check Eligibility</span>
+                            </button>
+                            <button class="secondary-btn" onclick="learnMore('Ayushman')">
+                                <i class="fas fa-info"></i>
+                                <span data-en="Learn More" data-hi="और जानें">Learn More</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scheme-card">
+                    <div class="scheme-header">
+                        <div class="scheme-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="scheme-title">
+                            <h3 data-en="Iron Folic Acid (IFA) Supplementation" data-hi="आयरन फोलिक एसिड (IFA) पूरकता">Iron Folic Acid (IFA) Supplementation</h3>
+                            <p class="scheme-subtitle" data-en="Anemia Prevention Program" data-hi="एनीमिया रोकथाम कार्यक्रम">Anemia Prevention Program</p>
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-content">
+                        <div class="scheme-benefits">
+                            <h4 data-en="Benefits:" data-hi="लाभ:">Benefits:</h4>
+                            <ul>
+                                <li data-en="Free iron and folic acid tablets" data-hi="मुफ्त आयरन और फोलिक एसिड टैबलेट">Free iron and folic acid tablets</li>
+                                <li data-en="Available at all PHCs and Sub-centers" data-hi="सभी PHC और उप-केंद्रों पर उपलब्ध">Available at all PHCs and Sub-centers</li>
+                                <li data-en="Prevents iron deficiency anemia" data-hi="आयरन की कमी से होने वाले एनीमिया को रोकता है">Prevents iron deficiency anemia</li>
+                                <li data-en="Reduces maternal mortality" data-hi="मातृ मृत्यु द्र कम करता है">Reduces maternal mortality</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-eligibility">
+                            <h4 data-en="Eligibility:" data-hi="पात्रता:">Eligibility:</h4>
+                            <ul>
+                                <li data-en="All pregnant women" data-hi="सभी गर्भवती महिलाएं">All pregnant women</li>
+                                <li data-en="Lactating mothers" data-hi="स्तनपान कराने वाली माताएं">Lactating mothers</li>
+                                <li data-en="Adolescent girls (10-19 years)" data-hi="किशोर लड़कियां (10-19 वर्ष)">Adolescent girls (10-19 years)</li>
+                                <li data-en="Women of reproductive age" data-hi="प्रजनन आयु की महिलाएं">Women of reproductive age</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="scheme-actions">
+                            <button class="primary-btn" onclick="contactASHA()">
+                                <i class="fas fa-user-md"></i>
+                                <span data-en="Contact ASHA" data-hi="आशा से संपर्क करें">Contact ASHA</span>
+                            </button>
+                            <button class="secondary-btn" onclick="findNearestPHC()">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span data-en="Find PHC" data-hi="PHC खोजें">Find PHC</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <div class="help-card">
+                    <div class="help-header">
+                        <i class="fas fa-hands-helping"></i>
+                        <h3 data-en="Need Help with Applications?" data-hi="आवेदन में सहायता चाहिए?">Need Help with Applications?</h3>
+                    </div>
+                    <p data-en="Get assistance from your local ASHA worker or visit the nearest Anganwadi center" data-hi="अपने स्थानीय आशा कार्यकर्ता से सहायता प्राप्त करें या निकटतम आंगनवाड़ी केंद्र पर जाएं">Get assistance from your local ASHA worker or visit the nearest Anganwadi center</p>
+                    <div class="help-buttons">
+                        <button class="primary-btn" onclick="contactASHA()">
+                            <i class="fas fa-phone"></i>
+                            <span data-en="Contact ASHA Worker" data-hi="आशा कार्यकर्ता से संपर्क करें">Contact ASHA Worker</span>
+                        </button>
+                        <button class="secondary-btn" onclick="findServices()">
+                            <i class="fas fa-search"></i>
+                            <span data-en="Find Services Near Me" data-hi="मेरे पास सेवाएं खोजें">Find Services Near Me</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Eligibility Modal -->
+        <div class="modal" id="eligibilityModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="eligibilityTitle" data-en="Eligibility Check" data-hi="पात्रता जांच">Eligibility Check</h3>
+                    <button class="close-btn" onclick="closeEligibilityModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="eligibilityBody">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-btn" onclick="closeEligibilityModal()" data-en="Close" data-hi="बंद करें">Close</button>
+                    <button class="primary-btn" id="applyBtn" onclick="applyForScheme()" data-en="Apply Now" data-hi="अभी आवेदन करें">Apply Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let currentScheme = null;
+        
+        const schemeDetails = {
+            JSY: {
+                name: { en: 'Janani Suraksha Yojana', hi: 'जननी सुरक्षा योजना' },
+                questions: [
+                    { id: 'age', text: { en: 'Are you 19 years or older?', hi: 'क्या आप 19 वर्ष या उससे अधिक आयु के हैं?' }, type: 'boolean' },
+                    { id: 'bpl', text: { en: 'Do you belong to a Below Poverty Line (BPL) family?', hi: 'क्या आप गरीबी रेखा से नीचे (BPL) परिवार से हैं?' }, type: 'boolean' },
+                    { id: 'children', text: { en: 'How many living children do you have?', hi: 'आपके कितने जीवित बच्चे हैं?' }, type: 'number', max: 2 },
+                    { id: 'delivery', text: { en: 'Are you planning institutional delivery?', hi: 'क्या आप संस्थागत प्रसव की योजना बना रहे हैं?' }, type: 'boolean' }
+                ],
+                applyUrl: 'https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=841&lid=309'
+            },
+            PMMVY: {
+                name: { en: 'Pradhan Mantri Matru Vandana Yojana', hi: 'प्रधान मंत्री मातृ वंदना योजना' },
+                questions: [
+                    { id: 'age', text: { en: 'Are you 19 years or older?', hi: 'क्या आप 19 वर्ष या उससे अधिक आयु के हैं?' }, type: 'boolean' },
+                    { id: 'firstChild', text: { en: 'Is this your first living child?', hi: 'क्या यह आपका पहला जीवित बच्चा है?' }, type: 'boolean' },
+                    { id: 'employment', text: { en: 'Are you in regular employment with the Central/State Government or PSU?', hi: 'क्या आप केंद्र/राज्य सरकार या PSU में नियमित रोजगार में हैं?' }, type: 'boolean', reverse: true },
+                    { id: 'registration', text: { en: 'Have you registered for pregnancy at an Anganwadi Center?', hi: 'क्या आपने आंगनवाड़ी केंद्र में गर्भावस्था के लिए पंजीकरण कराया है?' }, type: 'boolean' }
+                ],
+                applyUrl: 'https://pmmvy.nic.in/'
+            },
+            Ayushman: {
+                name: { en: 'Ayushman Bharat - PMJAY', hi: 'आयुष्मान भारत - PMJAY' },
+                questions: [
+                    { id: 'secc', text: { en: 'Is your family listed in SECC 2011 database?', hi: 'क्या आपका परिवार SECC 2011 डेटाबेस में सूचीबद्ध है?' }, type: 'boolean' },
+                    { id: 'rsby', text: { en: 'Were you covered under RSBY scheme earlier?', hi: 'क्या आप पहले RSBY योजना के तहत कवर थे?' }, type: 'boolean' },
+                    { id: 'income', text: { en: 'Is your annual family income less than ₹5 lakhs?', hi: 'क्या आपकी वार्षिक पारिवारिक आय ₹5 लाख से कम है?' }, type: 'boolean' }
+                ],
+                applyUrl: 'https://pmjay.gov.in/'
+            }
+        };
+        
+        function checkEligibility(scheme) {
+            currentScheme = scheme;
+            const details = schemeDetails[scheme];
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (!details) {
+                const notAvailableText = currentLang === 'hi' ? 'योजना विवरण उपलब्ध नहीं' : 'Scheme details not available';
+                showNotification(notAvailableText);
+                return;
+            }
+            
+            const modal = document.getElementById('eligibilityModal');
+            const title = document.getElementById('eligibilityTitle');
+            const body = document.getElementById('eligibilityBody');
+            
+            const titleText = currentLang === 'hi' ? 
+                `${details.name[currentLang]} - पात्रता जांच` :
+                `${details.name[currentLang]} - Eligibility Check`;
+            title.textContent = titleText;
+            
+            let bodyHTML = '<div class="eligibility-questions">';
+            
+            const yesText = currentLang === 'hi' ? 'हाँ' : 'Yes';
+            const noText = currentLang === 'hi' ? 'नहीं' : 'No';
+            
+            details.questions.forEach((question, index) => {
+                if (question.type === 'boolean') {
+                    bodyHTML += `
+                        <div class="question-group">
+                            <p class="question-text">${question.text[currentLang]}</p>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="q${index}" value="yes" onchange="updateEligibility()">
+                                    ${yesText}
+                                </label>
+                                <label>
+                                    <input type="radio" name="q${index}" value="no" onchange="updateEligibility()">
+                                    ${noText}
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                } else if (question.type === 'number') {
+                    bodyHTML += `
+                        <div class="question-group">
+                            <p class="question-text">${question.text[currentLang]}</p>
+                            <input type="number" name="q${index}" min="0" max="${question.max || 10}" 
+                                   onchange="updateEligibility()" class="number-input">
+                        </div>
+                    `;
+                }
+            });
+            
+            bodyHTML += '</div><div class="eligibility-result" id="eligibilityResult"></div>';
+            body.innerHTML = bodyHTML;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function updateEligibility() {
+            if (!currentScheme) return;
+            
+            const details = schemeDetails[currentScheme];
+            const result = document.getElementById('eligibilityResult');
+            const applyBtn = document.getElementById('applyBtn');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            let eligible = true;
+            let allAnswered = true;
+            
+            details.questions.forEach((question, index) => {
+                const inputs = document.querySelectorAll(`[name="q${index}"]`);
+                let answered = false;
+                let value = null;
+                
+                if (question.type === 'boolean') {
+                    const checkedInput = document.querySelector(`[name="q${index}"]:checked`);
+                    if (checkedInput) {
+                        answered = true;
+                        value = checkedInput.value === 'yes';
+                        
+                        // Check eligibility based on answer
+                        if (question.reverse) {
+                            if (value) eligible = false; // Should be No for eligibility
+                        } else {
+                            if (!value) eligible = false; // Should be Yes for eligibility
+                        }
+                    }
+                } else if (question.type === 'number') {
+                    const numberInput = document.querySelector(`[name="q${index}"]`);
+                    if (numberInput && numberInput.value !== '') {
+                        answered = true;
+                        value = parseInt(numberInput.value);
+                        
+                        if (question.max && value > question.max) {
+                            eligible = false;
+                        }
+                    }
+                }
+                
+                if (!answered) allAnswered = false;
+            });
+            
+            if (!allAnswered) {
+                const pleaseAnswerText = currentLang === 'hi' ? 
+                    'पात्रता जांचने के लिए कृपया सभी प्रश्नों का उत्तर दें' :
+                    'Please answer all questions to check eligibility';
+                result.innerHTML = `<p class="eligibility-pending">${pleaseAnswerText}</p>`;
+                applyBtn.style.display = 'none';
+                return;
+            }
+            
+            if (eligible) {
+                const eligibleText = currentLang === 'hi' ? 'आप पात्र दिखते हैं!' : 'You appear to be eligible!';
+                const eligibleDesc = currentLang === 'hi' ? 
+                    `आपके उत्तरों के आधार पर, आप ${details.name[currentLang]} के लिए योग्य हो सकते हैं। कृपया आवेदन प्रक्रिया पूरी करने के लिए अपने निकटतम केंद्र पर जाएं।` :
+                    `Based on your responses, you may qualify for ${details.name[currentLang]}. Please visit your nearest center to complete the application process.`;
+                
+                result.innerHTML = `
+                    <div class="eligibility-eligible">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>${eligibleText}</h4>
+                        <p>${eligibleDesc}</p>
+                    </div>
+                `;
+                applyBtn.style.display = 'block';
+                applyBtn.textContent = currentLang === 'hi' ? 'अभी आवेदन करें' : 'Apply Now';
+            } else {
+                const notEligibleText = currentLang === 'hi' ? 'आप पात्र नहीं हो सकते' : 'You may not be eligible';
+                const notEligibleDesc = currentLang === 'hi' ? 
+                    `आपके उत्तरों के आधार पर, आप ${details.name[currentLang]} के लिए योग्य नहीं हो सकते। हालांकि, पात्रता मानदंड जटिल हो सकते हैं। हम व्यक्तिगत मार्गदर्शन के लिए अपने आशा कार्यकर्ता से परामर्श करने की सलाह देते हैं।` :
+                    `Based on your responses, you may not qualify for ${details.name[currentLang]}. However, eligibility criteria can be complex. We recommend consulting with your ASHA worker for personalized guidance.`;
+                
+                result.innerHTML = `
+                    <div class="eligibility-not-eligible">
+                        <i class="fas fa-times-circle"></i>
+                        <h4>${notEligibleText}</h4>
+                        <p>${notEligibleDesc}</p>
+                    </div>
+                `;
+                applyBtn.style.display = 'block';
+                applyBtn.textContent = currentLang === 'hi' ? 'मार्गदर्शन प्राप्त करें' : 'Get Guidance';
+            }
+        }
+        
+        function closeEligibilityModal() {
+            document.getElementById('eligibilityModal').style.display = 'none';
+            currentScheme = null;
+        }
+        
+        function applyForScheme() {
+            if (!currentScheme) return;
+            
+            const details = schemeDetails[currentScheme];
+            if (details.applyUrl) {
+                window.open(details.applyUrl, '_blank');
+            } else {
+                // Default action - contact ASHA
+                contactASHA();
+            }
+        }
+        
+        function learnMore(scheme) {
+            const urls = {
+                JSY: 'https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=841&lid=309',
+                PMMVY: 'https://pmmvy.nic.in/',
+                Ayushman: 'https://pmjay.gov.in/'
+            };
+            
+            if (urls[scheme]) {
+                window.open(urls[scheme], '_blank');
+            } else {
+                const currentLang = localStorage.getItem('app_language') || 'en';
+                const moreInfoText = currentLang === 'hi' ? 
+                    'अधिक जानकारी जल्द ही उपलब्ध होगी' :
+                    'More information will be available soon';
+                showNotification(moreInfoText);
+            }
+        }
+        
+        function contactASHA() {
+            const ashaContact = localStorage.getItem('asha_contact');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (ashaContact) {
+                const callText = currentLang === 'hi' ? 
+                    `${ashaContact} पर आशा कार्यकर्ता को कॉल करें?` :
+                    `Call ASHA Worker at ${ashaContact}?`;
+                
+                if (confirm(callText)) {
+                    window.location.href = `tel:${ashaContact}`;
+                }
+            } else {
+                // Show ASHA contact form
+                const enterNumberText = currentLang === 'hi' ? 
+                    'कृपया अपने आशा कार्यकर्ता का फोन नंबर दर्ज करें:' :
+                    'Please enter your ASHA worker\'s phone number:';
+                
+                const contact = prompt(enterNumberText);
+                if (contact) {
+                    localStorage.setItem('asha_contact', contact);
+                    const callText = currentLang === 'hi' ? 
+                        `${contact} पर आशा कार्यकर्ता को कॉल करें?` :
+                        `Call ASHA Worker at ${contact}?`;
+                    
+                    if (confirm(callText)) {
+                        window.location.href = `tel:${contact}`;
+                    }
+                }
+            }
+        }
+        
+        function findNearestPHC() {
+            // In a real app, this would use geolocation and a database of PHCs
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const comingSoonText = currentLang === 'hi' ? 
+                'सुविधा जल्द आ रही है! PHC स्थानों के लिए कृपया अपने आशा कार्यकर्ता से संपर्क करें।' :
+                'Feature coming soon! Please contact your ASHA worker for PHC locations.';
+            showNotification(comingSoonText);
+        }
+        
+        function findServices() {
+            // In a real app, this would show a map with nearby services
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const comingSoonText = currentLang === 'hi' ? 
+                'सेवा लोकेटर जल्द आ रहा है! सहायता के लिए कृपया अपने आशा कार्यकर्ता से संपर्क करें।' :
+                'Service locator coming soon! Please contact your ASHA worker for assistance.';
+            showNotification(comingSoonText);
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('eligibilityModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEligibilityModal();
+            }
+        });
+    </script>
+</body>
+</html>

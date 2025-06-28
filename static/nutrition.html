@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Nutrition & Iron Reminder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <button class="back-btn" onclick="navigateTo('dashboard.html')">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-en="Nutrition & Iron Reminder" data-hi="पोषण और आयरन रिमाइंडर">Nutrition & Iron Reminder</h1>
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="nutrition-content">
+            <div class="iron-reminder-card">
+                <div class="reminder-header">
+                    <i class="fas fa-pills"></i>
+                    <h3 data-en="Iron Tablet Reminder" data-hi="आयरन टैबलेट रिमाइंडर">Iron Tablet Reminder</h3>
+                </div>
+                <div class="reminder-controls">
+                    <div class="reminder-time">
+                        <label data-en="Daily Reminder Time:" data-hi="दैनिक रिमाइंडर समय:">Daily Reminder Time:</label>
+                        <input type="time" id="reminderTime" value="09:00">
+                    </div>
+                    <div class="reminder-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="reminderSwitch" onchange="toggleReminder()">
+                            <span class="slider"></span>
+                        </label>
+                        <span data-en="Enable Notifications" data-hi="सूचनाएं सक्षम करें">Enable Notifications</span>
+                    </div>
+                </div>
+                <div class="today-iron">
+                    <p data-en="Today's Iron Tablet:" data-hi="आज की आयरन टैबलेट:">Today's Iron Tablet:</p>
+                    <button class="pill-btn" id="ironPillBtn" onclick="markIronTaken()">
+                        <i class="fas fa-pill"></i>
+                        <span id="ironStatus" data-en="Not Taken" data-hi="नहीं ली गई">Not Taken</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="nutrition-tracker">
+                <h3 data-en="Weekly Food Checklist" data-hi="साप्ताहिक भोजन चेकलिस्ट">Weekly Food Checklist</h3>
+                <div class="week-selector">
+                    <button class="week-nav" onclick="changeWeek(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="currentWeek" data-en="This Week" data-hi="इस सप्ताह">This Week</span>
+                    <button class="week-nav" onclick="changeWeek(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="food-grid" id="foodGrid">
+                    <!-- Food items will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="meal-logging">
+                <h3 data-en="Meal Photo Logger" data-hi="भोजन फोटो लॉगर">Meal Photo Logger</h3>
+                <div class="meal-times">
+                    <button class="meal-btn active" onclick="selectMealTime('breakfast')" data-en="Breakfast" data-hi="नाश्ता">Breakfast</button>
+                    <button class="meal-btn" onclick="selectMealTime('lunch')" data-en="Lunch" data-hi="दोपहर का खाना">Lunch</button>
+                    <button class="meal-btn" onclick="selectMealTime('dinner')" data-en="Dinner" data-hi="रात का खाना">Dinner</button>
+                    <button class="meal-btn" onclick="selectMealTime('snack')" data-en="Snack" data-hi="नाश्ता">Snack</button>
+                </div>
+                
+                <div class="photo-capture">
+                    <div class="meal-preview" id="mealPreview">
+                        <i class="fas fa-camera-alt"></i>
+                        <p data-en="Take a photo of your meal" data-hi="अपने भोजन की तस्वीर लें">Take a photo of your meal</p>
+                    </div>
+                    <button class="primary-btn" onclick="takeMealPhoto()">
+                        <i class="fas fa-camera"></i>
+                        <span data-en="Capture Meal" data-hi="भोजन कैप्चर करें">Capture Meal</span>
+                    </button>
+                    <input type="file" id="mealCameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleMealPhoto(event)">
+                </div>
+            </div>
+            
+            <div class="meal-history">
+                <h3 data-en="Today's Meals" data-hi="आज के भोजन">Today's Meals</h3>
+                <div class="meals-list" id="mealsList">
+                    <!-- Meals will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let currentMealTime = 'breakfast';
+        let currentWeekOffset = 0;
+        
+        const foodItems = [
+            { name: { en: 'Banana', hi: 'केला' }, icon: 'fas fa-banana', nutrients: { en: 'Potassium, Vitamin B6', hi: 'पोटेशियम, विटामिन B6' } },
+            { name: { en: 'Jaggery', hi: 'गुड़' }, icon: 'fas fa-cube', nutrients: { en: 'Iron, Minerals', hi: 'आयरन, खनिज' } },
+            { name: { en: 'Dal/Lentils', hi: 'दाल' }, icon: 'fas fa-seedling', nutrients: { en: 'Protein, Iron, Folate', hi: 'प्रोटीन, आयरन, फोलेट' } },
+            { name: { en: 'Spinach', hi: 'पालक' }, icon: 'fas fa-leaf', nutrients: { en: 'Iron, Folate, Vitamin K', hi: 'आयरन, फोलेट, विटामिन K' } },
+            { name: { en: 'Meat/Fish', hi: 'मांस/मछली' }, icon: 'fas fa-fish', nutrients: { en: 'Iron, Protein, B12', hi: 'आयरन, प्रोटीन, B12' } },
+            { name: { en: 'Eggs', hi: 'अंडे' }, icon: 'fas fa-egg', nutrients: { en: 'Protein, Iron, B12', hi: 'प्रोटीन, आयरन, B12' } },
+            { name: { en: 'Milk', hi: 'दूध' }, icon: 'fas fa-glass-whiskey', nutrients: { en: 'Calcium, Protein, B12', hi: 'कैल्शियम, प्रोटीन, B12' } },
+            { name: { en: 'Dried Fruits', hi: 'सूखे मेवे' }, icon: 'fas fa-apple', nutrients: { en: 'Iron, Vitamin C', hi: 'आयरन, विटामिन C' } }
+        ];
+        
+        const days = { en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], hi: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'] };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNutrition();
+        });
+        
+        function initializeNutrition() {
+            loadIronReminderStatus();
+            renderFoodGrid();
+            loadTodaysMeals();
+        }
+        
+        function loadIronReminderStatus() {
+            const today = new Date().toDateString();
+            const ironStatus = localStorage.getItem(`iron_${today}`);
+            const reminderEnabled = localStorage.getItem('iron_reminder_enabled') === 'true';
+            const reminderTime = localStorage.getItem('iron_reminder_time') || '09:00';
+            
+            document.getElementById('reminderSwitch').checked = reminderEnabled;
+            document.getElementById('reminderTime').value = reminderTime;
+            
+            if (ironStatus === 'taken') {
+                markIronTaken(false);
+            }
+        }
+        
+        function toggleReminder() {
+            const enabled = document.getElementById('reminderSwitch').checked;
+            const time = document.getElementById('reminderTime').value;
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            localStorage.setItem('iron_reminder_enabled', enabled);
+            localStorage.setItem('iron_reminder_time', time);
+            
+            if (enabled && 'Notification' in window) {
+                Notification.requestPermission();
+                const reminderText = currentLang === 'hi' ? 
+                    `आयरन टैबलेट रिमाइंडर ${time} पर दैनिक सेट किया गया` :
+                    `Iron tablet reminder set for ${time} daily`;
+                showNotification(reminderText);
+            }
+        }
+        
+        function markIronTaken(showNotification = true) {
+            const today = new Date().toDateString();
+            const btn = document.getElementById('ironPillBtn');
+            const status = document.getElementById('ironStatus');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            localStorage.setItem(`iron_${today}`, 'taken');
+            btn.classList.add('taken');
+            btn.disabled = true;
+            
+            const takenText = currentLang === 'hi' ? 'आज ली गई' : 'Taken Today';
+            status.textContent = takenText;
+            
+            if (showNotification) {
+                const successText = currentLang === 'hi' ? 
+                    'बहुत बढ़िया! आज के लिए आयरन टैबलेट ली गई के रूप में चिह्नित।' :
+                    'Great! Iron tablet marked as taken for today.';
+                showNotification(successText);
+            }
+        }
+        
+        function renderFoodGrid() {
+            const foodGrid = document.getElementById('foodGrid');
+            const weekStart = getWeekStart(currentWeekOffset);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const dayNames = days[currentLang];
+            
+            let gridHTML = `<div class="food-header"><div class="food-name">${currentLang === 'hi' ? 'खाद्य पदार्थ' : 'Food Item'}</div>`;
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(weekStart);
+                date.setDate(date.getDate() + i);
+                gridHTML += `<div class="day-header">${dayNames[i]}<br><small>${date.getDate()}</small></div>`;
+            }
+            gridHTML += '</div>';
+            
+            foodItems.forEach(food => {
+                gridHTML += `<div class="food-row">
+                    <div class="food-item">
+                        <i class="${food.icon}"></i>
+                        <div>
+                            <div class="food-name">${food.name[currentLang]}</div>
+                            <div class="food-nutrients">${food.nutrients[currentLang]}</div>
+                        </div>
+                    </div>`;
+                
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(weekStart);
+                    date.setDate(date.getDate() + i);
+                    const dateStr = date.toDateString();
+                    const key = `food_${food.name.en}_${dateStr}`;
+                    const eaten = localStorage.getItem(key) === 'true';
+                    
+                    gridHTML += `<div class="food-checkbox">
+                        <label class="checkbox-container">
+                            <input type="checkbox" ${eaten ? 'checked' : ''} 
+                                   onchange="toggleFood('${food.name.en}', '${dateStr}', this)">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>`;
+                }
+                gridHTML += '</div>';
+            });
+            
+            foodGrid.innerHTML = gridHTML;
+        }
+        
+        function getWeekStart(weekOffset) {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - dayOfWeek + (weekOffset * 7));
+            return weekStart;
+        }
+        
+        function changeWeek(direction) {
+            currentWeekOffset += direction;
+            renderFoodGrid();
+            
+            const weekStart = getWeekStart(currentWeekOffset);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            if (currentWeekOffset === 0) {
+                document.getElementById('currentWeek').textContent = currentLang === 'hi' ? 'इस सप्ताह' : 'This Week';
+            } else if (currentWeekOffset === -1) {
+                document.getElementById('currentWeek').textContent = currentLang === 'hi' ? 'पिछला सप्ताह' : 'Last Week';
+            } else if (currentWeekOffset === 1) {
+                document.getElementById('currentWeek').textContent = currentLang === 'hi' ? 'अगला सप्ताह' : 'Next Week';
+            } else {
+                document.getElementById('currentWeek').textContent = 
+                    `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`;
+            }
+        }
+        
+        function toggleFood(foodName, dateStr, checkbox) {
+            const key = `food_${foodName}_${dateStr}`;
+            localStorage.setItem(key, checkbox.checked);
+            
+            if (checkbox.checked) {
+                const currentLang = localStorage.getItem('app_language') || 'en';
+                const foodItem = foodItems.find(f => f.name.en === foodName);
+                const displayName = foodItem ? foodItem.name[currentLang] : foodName;
+                const eatenText = currentLang === 'hi' ? 
+                    `${displayName} खाया गया के रूप में चिह्नित!` :
+                    `${displayName} marked as eaten!`;
+                showNotification(eatenText);
+            }
+        }
+        
+        function selectMealTime(mealTime) {
+            currentMealTime = mealTime;
+            document.querySelectorAll('.meal-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function takeMealPhoto() {
+            document.getElementById('mealCameraInput').click();
+        }
+        
+        function handleMealPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Display preview
+                    const preview = document.getElementById('mealPreview');
+                    preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                    
+                    // Save meal
+                    saveMeal(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function saveMeal(imageData) {
+            const meal = {
+                id: Date.now(),
+                mealTime: currentMealTime,
+                timestamp: new Date().toISOString(),
+                image: imageData
+            };
+            
+            const today = new Date().toDateString();
+            const key = `meals_${today}`;
+            const meals = JSON.parse(localStorage.getItem(key) || '[]');
+            meals.push(meal);
+            localStorage.setItem(key, JSON.stringify(meals));
+            
+            loadTodaysMeals();
+            
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const mealNames = {
+                breakfast: { en: 'Breakfast', hi: 'नाश्ता' },
+                lunch: { en: 'Lunch', hi: 'दोपहर का खाना' },
+                dinner: { en: 'Dinner', hi: 'रात का खाना' },
+                snack: { en: 'Snack', hi: 'नाश्ता' }
+            };
+            
+            const mealName = mealNames[currentMealTime][currentLang];
+            const savedText = currentLang === 'hi' ? 
+                `${mealName} फोटो सेव हो गई!` :
+                `${mealName} photo saved!`;
+            showNotification(savedText);
+        }
+        
+        function loadTodaysMeals() {
+            const today = new Date().toDateString();
+            const key = `meals_${today}`;
+            const meals = JSON.parse(localStorage.getItem(key) || '[]');
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            
+            const mealsList = document.getElementById('mealsList');
+            if (meals.length === 0) {
+                const noMealsText = currentLang === 'hi' ? 'आज कोई भोजन लॉग नहीं किया गया' : 'No meals logged today';
+                mealsList.innerHTML = `<div class="no-meals"><i class="fas fa-utensils"></i><p>${noMealsText}</p></div>`;
+                return;
+            }
+            
+            const mealNames = {
+                breakfast: { en: 'Breakfast', hi: 'नाश्ता' },
+                lunch: { en: 'Lunch', hi: 'दोपहर का खाना' },
+                dinner: { en: 'Dinner', hi: 'रात का खाना' },
+                snack: { en: 'Snack', hi: 'नाश्ता' }
+            };
+            
+            const loggedAtText = currentLang === 'hi' ? 'पर लॉग किया गया' : 'Logged at';
+            
+            mealsList.innerHTML = meals.map(meal => {
+                const time = new Date(meal.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const mealName = mealNames[meal.mealTime][currentLang];
+                return `<div class="meal-item">
+                    <div class="meal-image">
+                        <img src="${meal.image}" alt="${meal.mealTime}">
+                    </div>
+                    <div class="meal-info">
+                        <h4>${mealName}</h4>
+                        <p>${loggedAtText} ${time}</p>
+                    </div>
+                    <button class="delete-meal-btn" onclick="deleteMeal('${meal.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>`;
+            }).join('');
+        }
+        
+        function deleteMeal(mealId) {
+            const today = new Date().toDateString();
+            const key = `meals_${today}`;
+            let meals = JSON.parse(localStorage.getItem(key) || '[]');
+            meals = meals.filter(meal => meal.id != mealId);
+            localStorage.setItem(key, JSON.stringify(meals));
+            
+            loadTodaysMeals();
+            const currentLang = localStorage.getItem('app_language') || 'en';
+            const deletedText = currentLang === 'hi' ? 'भोजन हटा दिया गया' : 'Meal deleted';
+            showNotification(deletedText);
+        }
+    </script>
+</body>
+</html>

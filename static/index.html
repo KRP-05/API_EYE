@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-nemia - Anemia Detection for Pregnant Women</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="splash-container">
+        <div class="splash-content">
+            <div class="logo-section">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <h1 class="app-title" data-en="AI-nemia" data-hi="AI-नेमिया">AI-nemia</h1>
+                <p class="app-subtitle" data-en="Anemia Detection for Pregnant Women" data-hi="गर्भवती महिलाओं के लिए एनीमिया का पता लगाना">Anemia Detection for Pregnant Women</p>
+            </div>
+            
+            <div class="illustration">
+                <div class="pregnant-woman-icon">
+                    <i class="fas fa-female"></i>
+                    <div class="scanning-animation">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="primary-btn" onclick="navigateTo('auth.html?role=health-worker')">
+                    <i class="fas fa-user-md"></i>
+                    <span data-en="Continue as Health Worker" data-hi="स्वास्थ्य कार्यकर्ता के रूप में जारी रखें">Continue as Health Worker</span>
+                </button>
+                
+                <button class="secondary-btn" onclick="navigateTo('auth.html?role=patient')">
+                    <i class="fas fa-user"></i>
+                    <span data-en="Continue as Patient" data-hi="रोगी के रूप में जारी रखें">Continue as Patient</span>
+                </button>
+            </div>
+            
+            <div class="language-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="te">తెలుగు</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
